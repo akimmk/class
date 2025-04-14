@@ -3,7 +3,6 @@
 
 const { contextBridge, ipcRenderer } = require("electron");
 
-console.log("here");
 contextBridge.exposeInMainWorld("electronAPI", {
   getIp: () => ipcRenderer.invoke("getIp"),
   getDesktopSources: (types) => ipcRenderer.invoke("getScreenSources", types),
