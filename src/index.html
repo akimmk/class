@@ -1,100 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <style>
-      tr {
-        vertical-align: top;
-      }
-
-      .video {
-        width: 360px;
-        background-color: black;
-        margin: 2px 0;
-      }
-
-      button {
-        margin: 2;
-      }
-
-      .sharedBtns {
-        padding: 5;
-        background-color: papayawhip;
-      }
-
-      .source-box {
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        padding: 8px;
-        text-align: center;
-        width: 180px;
-        cursor: pointer;
-        transition: 0.2s;
-      }
-
-      .source-box:hover {
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      }
-
-      .thumb {
-        width: 100%;
-        border-radius: 6px;
-      }
-    </style>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval'; connect-src 'self' http://localhost:3000 ws://localhost:3000;"
+    />
+    <title>ClassPilot</title>
   </head>
   <body>
     <div id="root"></div>
-    <!-- React root element -->
-    <div id="video">
-      <table>
-        <thead>
-          <th>Local Video</th>
-          <th>Remote Video</th>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <div class="sharedBtns">
-                <video id="localVideo" autoplay class="video"></video>
-              </div>
-            </td>
-            <td>
-              <div class="sharedBtns">
-                <video
-                  id="remoteVideo"
-                  autoplay
-                  playsinline
-                  class="video"
-                ></video>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button id="btnLocalVideo">Choose Source</button>
-
-              <div
-                id="sourceContainer"
-                style="display: flex; gap: 1rem; flex-wrap: wrap"
-              ></div>
-
-              <video
-                autoplay
-                playsinline
-                style="width: 80%; margin-top: 2rem"
-              ></video>
-            </td>
-            <td>
-              <div class="sharedBtns">
-                <button id="btnRecvSendTransport">consume</button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
   </body>
-  <footer>
-    <!-- Load the bundled renderer script from the project's 'dist' directory -->
-    <script src="../dist/renderer.bundle.js"></script>
-  </footer>
 </html>

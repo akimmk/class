@@ -4,8 +4,5 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
-  getIp: () => ipcRenderer.invoke("getIp"),
   getDesktopSources: (types) => ipcRenderer.invoke("getScreenSources", types),
-  // getSources: (opts) => desktopCapturer.getSources(opts),
-  // Removed getRtpCapabilities and createDevice as they are now handled in the renderer
 });
