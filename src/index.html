@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <style>
@@ -42,56 +42,56 @@
     </style>
   </head>
   <body>
-    <body>
-      <div id="video">
-        <table>
-          <thead>
-            <th>Local Video</th>
-            <th>Remote Video</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <div class="sharedBtns">
-                  <video id="localVideo" autoplay class="video"></video>
-                </div>
-              </td>
-              <td>
-                <div class="sharedBtns">
-                  <video
-                    id="remoteVideo"
-                    autoplay
-                    playsinline
-                    class="video"
-                  ></video>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button id="btnLocalVideo">Choose Source</button>
-
-                <div
-                  id="sourceContainer"
-                  style="display: flex; gap: 1rem; flex-wrap: wrap"
-                ></div>
-
+    <div id="root"></div>
+    <!-- React root element -->
+    <div id="video">
+      <table>
+        <thead>
+          <th>Local Video</th>
+          <th>Remote Video</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="sharedBtns">
+                <video id="localVideo" autoplay class="video"></video>
+              </div>
+            </td>
+            <td>
+              <div class="sharedBtns">
                 <video
+                  id="remoteVideo"
                   autoplay
                   playsinline
-                  style="width: 80%; margin-top: 2rem"
+                  class="video"
                 ></video>
-              </td>
-              <td>
-                <div class="sharedBtns">
-                  <button id="btnRecvSendTransport">consume</button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </body>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <button id="btnLocalVideo">Choose Source</button>
+
+              <div
+                id="sourceContainer"
+                style="display: flex; gap: 1rem; flex-wrap: wrap"
+              ></div>
+
+              <video
+                autoplay
+                playsinline
+                style="width: 80%; margin-top: 2rem"
+              ></video>
+            </td>
+            <td>
+              <div class="sharedBtns">
+                <button id="btnRecvSendTransport">consume</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </body>
   <footer>
     <!-- Load the bundled renderer script from the project's 'dist' directory -->

@@ -26,7 +26,7 @@ const preloadConfig = {
 
 // Separate config for renderer script
 const rendererConfig = {
-  entry: "./src/render.js", // Entry point for renderer
+  entry: "./src/index.jsx", // Updated entry point for React
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "renderer.bundle.js", // Output for renderer
@@ -35,40 +35,33 @@ const rendererConfig = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/, // Support .js and .jsx files
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-react"], // Add React preset
+          },
         },
       },
     ],
   },
   resolve: {
+    extensions: [".js", ".jsx"], // Resolve .jsx files
     alias: {
       "mediasoup-client": path.resolve(
         __dirname,
-        "node_modules/mediasoup-client",
+        "node_modules/mediasoup-client"
       ), // Ensure it is resolved correctly
     },
   },
-  // Add plugins if needed, e.g., HtmlWebpackPlugin
   plugins: [
-    // Define process.env variables if needed by dependencies
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(
-        process.env.NODE_ENV || "development",
+        process.env.NODE_ENV || "development"
       ),
     }),
   ],
-  // Add node polyfills if needed for browser compatibility in renderer
-  resolve: {
-    fallback: {
-      os: require.resolve("os-browserify/browser"),
-      path: require.resolve("path-browserify"),
-      buffer: require.resolve("buffer/"),
-      // Add other Node core modules polyfills if needed by dependencies
-    },
-  },
 };
 
 // Export both configurations
