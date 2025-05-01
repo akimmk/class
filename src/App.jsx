@@ -1,7 +1,12 @@
-import React from "react";
+import * as React from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import Mediaclass from "./pages/Mediaclass.jsx";
+
+const root = createRoot(document.body);
 
 const App = () => {
-  return <h1>Welcome to React with Electron!</h1>;
+  return <Mediaclass />;
 };
 
-export default App;
+root.render(<App />);
