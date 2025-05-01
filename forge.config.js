@@ -34,7 +34,7 @@ module.exports = {
       config: {
         mainConfig: "./webpack.main.config.js",
         devContentSecurityPolicy:
-          "default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval'; connect-src 'self' http://localhost:3000 ws://localhost:3000;",
+          "default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval'; connect-src 'self' http://localhost:3000 ws://localhost:3000;  style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com;",
         renderer: {
           config: "./webpack.renderer.config.js",
           entryPoints: [

@@ -1,3 +1,7 @@
+import React from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App.jsx";
+
 /**
  * This file will automatically be loaded by webpack and run in the "renderer" context.
  * To learn more about the differences between the "main" and the "renderer" context in
@@ -14,7 +18,6 @@
  * To enable Node.js integration in this file, open up `main.js` and enable the `nodeIntegration`
  * flag:
  *
- * ```
  *  // Create the browser window.
  *  mainWindow = new BrowserWindow({
  *    width: 800,
@@ -29,5 +32,11 @@
 console.log(
   '👋 This message is being logged by "renderer.js", included via webpack',
 );
-// Add this to the end of the existing file
-import "./App.jsx";
+
+const container = document.getElementById("root");
+const root = createRoot(container);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);
