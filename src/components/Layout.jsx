@@ -8,16 +8,17 @@ const Layout = () => {
     <div className="app-container">
       <Sidebar />
       <main className="main-content">
-        <div className="user-header flex justify-end items-center gap-4 p-4 border-b border-gray-200">
+        <div className="user-header flex justify-between items-center gap-4 p-4 border-b border-gray-200">
+            <div className="user-info text-md flex items-center gap-2 border border-gray-200 rounded-full px-4 py-2">
+              <span className="user-name font-bold text-xl">Welcome Michael 👋 </span>
+            </div>
+            <div className="flex items-center gap-4 border border-gray-200 rounded-full px-4 py-2">
           <div className="notifications">
             <span className="material-icons text-gray-600 cursor-pointer">notifications</span>
           </div>
           <div className="user-profile flex items-center gap-2">
             <img src={defaultAvatar} alt="User avatar" className="avatar w-10 h-10 rounded-full" />
-            <div className="user-info text-sm">
-              <span className="user-name font-medium">Michael</span>
-              <span className="user-class text-gray-500 text-xs"></span>
-            </div>
+          </div>
           </div>
         </div>
         <div className="content">

@@ -1,7 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Classes = () => {
   const [activeTab, setActiveTab] = useState("live");
+  const navigate = useNavigate();
+
+  const handleJoinClass = (joinLink) => {
+    navigate(joinLink);
+  };
 
   const liveClasses = [
     {
@@ -119,10 +125,13 @@ const Classes = () => {
         </div>
         <div className="class-actions">
           {classItem.status === "live" && (
-            <a href={classItem.joinLink} className="join-btn">
+            <button
+              onClick={() => handleJoinClass(classItem.joinLink)}
+              className="join-btn"
+            >
               Join Class
               <span className="material-icons">video_call</span>
-            </a>
+            </button>
           )}
           {classItem.status === "completed" && (
             <a href={classItem.recordingLink} className="view-btn">
@@ -179,4 +188,4 @@ const Classes = () => {
   );
 };
 
-export default Classes; 
+export default Classes;
