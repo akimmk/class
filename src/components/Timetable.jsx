@@ -1,4 +1,5 @@
 import React from "react";
+import TimeSlot from "../components/TimeSlot.jsx";
 
 const Timetable = () => {
   const timeSlots = [
@@ -76,29 +77,14 @@ const Timetable = () => {
       <div className="time-slots-container">
         <div className="time-slots">
           {timeSlots.map((slot, index) => (
-            <div
+            <TimeSlot
               key={index}
-              className={`time-slot ${slot.subject.toLowerCase()}`}
-            >
-              <div className="time">{slot.time}</div>
-              <div className="class-details">
-                <div className="subject-name">
-                  <span className="subject-icon"></span>
-                  {slot.subject}
-                </div>
-                <div className="class-info">
-                  {slot.unit} {slot.chapter}
-                </div>
-                <div className="teacher">
-                  <img
-                    src="/teacher-avatar.png"
-                    alt={slot.teacher}
-                    className="teacher-avatar"
-                  />
-                  {slot.teacher}
-                </div>
-              </div>
-            </div>
+              time={slot.time}
+              subject={slot.subject}
+              unit={slot.unit}
+              chapter={slot.chapter}
+              teacher={slot.teacher}
+            />
           ))}
         </div>
       </div>

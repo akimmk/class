@@ -13,7 +13,7 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <img src={logo} alt="Kampus Logo" className="logo" />
+        <img src={logo} alt="Logo" className="logo" />
         <h1 className="brand">ClassPilot</h1>
       </div>
 
