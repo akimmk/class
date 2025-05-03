@@ -30,11 +30,16 @@
     "@electron-forge/plugin-webpack": "^7.8.0",
     "@electron/fuses": "^1.8.0",
     "@svgr/webpack": "^8.1.0",
+    "@tailwindcss/postcss": "^4.1.5",
+    "@tailwindcss/postcss7-compat": "^2.2.17",
     "@vercel/webpack-asset-relocator-loader": "^1.7.3",
+    "autoprefixer": "^9.8.8",
     "babel-loader": "^10.0.0",
     "css-loader": "^6.11.0",
     "electron": "35.2.1",
     "node-loader": "^2.1.0",
+    "postcss": "^7.0.39",
+    "postcss-loader": "^8.1.1",
     "style-loader": "^3.3.4"
   },
   "dependencies": {
