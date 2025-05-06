@@ -1,8 +1,8 @@
 const mediasoupClient = require("mediasoup-client");
 const io = require("socket.io-client");
 
-export const goConsume = () => {
-  goConnect(false);
+export const goConsume = (onTrack) => {
+  goConnect(false, onTrack);
 };
 const socket = io("ws://localhost:3000/mediasoup");
 
@@ -74,7 +74,7 @@ export const getLocalStream = async () => {
   });
 };
 
-async function selectSource(source) {
+export const selectSource = async (source) => {
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
@@ -87,7 +87,7 @@ async function selectSource(source) {
     },
   });
 
-  localVideo.srcObject = stream;
+  // localVideo.srcObject = stream;
   const track = stream.getVideoTracks()[0];
   params = {
     track,
@@ -97,17 +97,17 @@ async function selectSource(source) {
   goConnect(true);
 }
 
-const goConnect = (producerOrConsumer) => {
+const goConnect = (producerOrConsumer, onTrack) => {
   isProducer = producerOrConsumer;
   console.log(device);
-  device === undefined ? getRtpCapabilities() : goCreateTransport();
+  device === undefined ? getRtpCapabilities() : goCreateTransport(onTrack);
 };
 
-const goCreateTransport = () => {
-  isProducer ? createSendTransport() : createRecvTransport();
+const goCreateTransport = (onTrack) => {
+  isProducer ? createSendTransport() : createRecvTransport(onTrack);
 };
 
-const createRecvTransport = async () => {
+const createRecvTransport = async (onTrack) => {
   await socket.emit(
     "createWebRtcTransport",
     { sender: false },
@@ -136,12 +136,12 @@ const createRecvTransport = async () => {
         },
       );
 
-      connectRecvTransport();
+      connectRecvTransport(onTrack);
     },
   );
 };
 
-const connectRecvTransport = async () => {
+const connectRecvTransport = async (onTrack) => {
   await socket.emit(
     "consume",
     {
@@ -162,8 +162,11 @@ const connectRecvTransport = async () => {
       });
 
       const { track } = consumer;
-
-      remoteVideo.srcObject = new MediaStream([track]);
+      
+      // Call the callback with the track
+      if (onTrack) {
+        onTrack(track);
+      }
 
       socket.emit("consumer-resume");
     },

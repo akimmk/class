@@ -7,6 +7,8 @@ const Sidebar = () => {
     { icon: "dashboard", label: "Dashboard", path: "/" },
     { icon: "book", label: "Courses", path: "/courses" },
     { icon: "schedule", label: "Classes", path: "/classes" },
+    { icon: "videocam", label: "Streaming", path: "/streaming" },
+    { icon: "play_circle", label: "View Stream", path: "/consumer" },
   ];
 
   return (
