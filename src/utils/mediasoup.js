@@ -274,3 +274,9 @@ const createDevice = async () => {
     }
   }
 };
+
+export const replaceProducerTrack = async (newTrack) => {
+  if (producer) {
+    await producer.replaceTrack({ track: newTrack });
+  }
+};
