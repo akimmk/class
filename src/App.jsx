@@ -7,6 +7,7 @@ import Classes from "./pages/Classes.jsx";
 import Streaming from "./pages/Streaming.jsx";
 import Consumer from "./pages/Consumer.jsx";
 import Login from "./pages/Login.jsx";
+import TeacherDashboard from "./pages/TeacherDashboard.jsx";
 import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import "./index.css";
 
@@ -37,6 +38,7 @@ const App = () => {
             <Route path="classes" element={<Classes />} />
             <Route path="streaming" element={<Streaming />} />
             <Route path="consumer" element={<Consumer />} />
+            <Route path="teacher" element={<TeacherDashboard />} />
           </Route>
         </Routes>
       </HashRouter>

@@ -1,12 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ClassSessionWindow from '../components/ClassSessionWindow.jsx';
 
 const ClassListWindow = ({ course, onClose }) => {
+  const [selectedClass, setSelectedClass] = useState(null);
+  
   // This would typically come from your backend/database
   const classes = [
     { id: 1, title: 'Introduction to Course', date: '2024-03-20', duration: '1h 30m' },
     { id: 2, title: 'Basic Concepts', date: '2024-03-22', duration: '1h 45m' },
     { id: 3, title: 'Advanced Topics', date: '2024-03-25', duration: '2h' },
   ];
+
+  const handleStartClass = (classItem) => {
+    setSelectedClass(classItem);
+  };
+
+  if (selectedClass) {
+    return (
+      <ClassSessionWindow
+        classItem={selectedClass}
+        course={course}
+        onClose={() => setSelectedClass(null)}
+      />
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-white z-50">
@@ -69,7 +86,10 @@ const ClassListWindow = ({ course, onClose }) => {
                     </div>
                   </div>
                   <div className="course-actions">
-                    <button className="continue-btn">
+                    <button 
+                      className="continue-btn"
+                      onClick={() => handleStartClass(classItem)}
+                    >
                       Start Class
                       <span className="material-icons">play_circle</span>
                     </button>

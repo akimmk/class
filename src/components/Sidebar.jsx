@@ -5,6 +5,7 @@ import logo from "../assets/classpilot-logo.svg";
 const Sidebar = () => {
   const navItems = [
     { icon: "dashboard", label: "Dashboard", path: "/" },
+    { icon: "school", label: "Teacher Dashboard", path: "/teacher" },
     { icon: "book", label: "Courses", path: "/courses" },
     { icon: "schedule", label: "Classes", path: "/classes" },
     { icon: "videocam", label: "Streaming", path: "/streaming" },

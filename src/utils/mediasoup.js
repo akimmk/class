@@ -4,7 +4,7 @@ const io = require("socket.io-client");
 export const goConsume = (onTrack) => {
   goConnect(false, onTrack);
 };
-const socket = io("ws://10.139.27.52:3000/mediasoup");
+const socket = io("ws://10.139.66.88:3000/mediasoup");
 
 socket.on("connection-success", ({ socketId, existsProducer }) => {
   console.log("Socket connected:", socketId, existsProducer);
