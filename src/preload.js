@@ -5,4 +5,5 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
   getDesktopSources: (types) => ipcRenderer.invoke("getScreenSources", types),
+  createKioskWindow: () => ipcRenderer.invoke("startKiosk"),
 });

@@ -4,11 +4,8 @@ const io = require("socket.io-client");
 export const goConsume = (onTrack) => {
   goConnect(false, onTrack);
 };
-<<<<<<< HEAD
+
 const socket = io("ws://localhost:3000/mediasoup");
-=======
-const socket = io("ws://10.139.66.88:3000/mediasoup");
->>>>>>> 5a7a7d96e1984e2d30a9183dba0f204c92096049
 
 socket.on("connection-success", ({ socketId, existsProducer }) => {
   console.log("Socket connected:", socketId, existsProducer);
@@ -99,7 +96,7 @@ export const selectSource = async (source) => {
   };
 
   goConnect(true);
-}
+};
 
 const goConnect = (producerOrConsumer, onTrack) => {
   isProducer = producerOrConsumer;
@@ -166,7 +163,7 @@ const connectRecvTransport = async (onTrack) => {
       });
 
       const { track } = consumer;
-      
+
       // Call the callback with the track
       if (onTrack) {
         onTrack(track);

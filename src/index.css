@@ -10,7 +10,9 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
   background-color: #f5f7fb;
   color: #333;
 }
@@ -214,12 +216,24 @@ body {
   background: #f8f9fa;
 }
 
-.time-slot.english { border-left-color: #FF69B4; }
-.time-slot.maths { border-left-color: #32CD32; }
-.time-slot.physics { border-left-color: #FF4500; }
-.time-slot.botany { border-left-color: #4169E1; }
-.time-slot.tamil { border-left-color: #FF69B4; }
-.time-slot.chemistry { border-left-color: #FFD700; }
+.time-slot.english {
+  border-left-color: #ff69b4;
+}
+.time-slot.maths {
+  border-left-color: #32cd32;
+}
+.time-slot.physics {
+  border-left-color: #ff4500;
+}
+.time-slot.botany {
+  border-left-color: #4169e1;
+}
+.time-slot.tamil {
+  border-left-color: #ff69b4;
+}
+.time-slot.chemistry {
+  border-left-color: #ffd700;
+}
 
 .time {
   min-width: 120px;
@@ -471,7 +485,9 @@ body {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .course-card:hover {
@@ -634,7 +650,7 @@ body {
 }
 
 .tab-btn.active::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -1rem;
   left: 0;
@@ -667,7 +683,9 @@ body {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .class-card:hover {
@@ -877,11 +895,8 @@ body {
 /* Teacher Dashboard Styles */
 .teacher-dashboard {
   padding: 2rem;
-<<<<<<< HEAD
-=======
   max-width: 1400px;
   margin: 0 auto;
->>>>>>> 5a7a7d96e1984e2d30a9183dba0f204c92096049
 }
 
 .dashboard-header {
@@ -891,125 +906,17 @@ body {
   margin-bottom: 2rem;
 }
 
-<<<<<<< HEAD
 .dashboard-header h1 {
   font-size: 1.75rem;
   font-weight: 600;
   color: #333;
 }
 
-=======
->>>>>>> 5a7a7d96e1984e2d30a9183dba0f204c92096049
 .header-actions {
   display: flex;
   gap: 1rem;
 }
 
-<<<<<<< HEAD
-.primary-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  background-color: #1a73e8;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.primary-btn:hover {
-  background-color: #1557b0;
-}
-
-.dashboard-tabs {
-  display: flex;
-  gap: 1rem;
-  border-bottom: 1px solid #eaeaea;
-  padding-bottom: 1rem;
-  margin-bottom: 2rem;
-}
-
-.dashboard-tabs .tab-btn {
-  padding: 0.75rem 1.25rem;
-  border: none;
-  background: none;
-  color: #666;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s ease;
-}
-
-.dashboard-tabs .tab-btn:hover {
-  color: #1a73e8;
-}
-
-.dashboard-tabs .tab-btn.active {
-  color: #1a73e8;
-}
-
-.dashboard-tabs .tab-btn.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1rem;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: #1a73e8;
-}
-
-.overview-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 2rem;
-}
-
-.dashboard-card {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.dashboard-card h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 1.5rem;
-}
-
-.card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.lab-item, .class-item, .resource-item {
-  padding: 1rem;
-  border-radius: 8px;
-  background: #f8f9fa;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.lab-info h3, .class-info h3, .resource-info h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 0.25rem;
-}
-
-.lab-info p, .class-info p, .resource-info p {
-  font-size: 0.875rem;
-  color: #666;
-  margin-bottom: 0.25rem;
-=======
 .dashboard-tabs {
   display: flex;
   gap: 1rem;
@@ -1058,12 +965,16 @@ body {
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   padding: 1.5rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .session-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .session-header {
@@ -1077,26 +988,10 @@ body {
   font-size: 1.25rem;
   font-weight: 600;
   color: #111827;
->>>>>>> 5a7a7d96e1984e2d30a9183dba0f204c92096049
 }
 
 .status-badge {
   padding: 0.25rem 0.75rem;
-<<<<<<< HEAD
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.status-badge.confirmed, .status-badge.approved {
-  background-color: #e6f4ea;
-  color: #137333;
-}
-
-.status-badge.pending {
-  background-color: #fef7e0;
-  color: #b06000;
-=======
   border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -1152,12 +1047,16 @@ body {
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   padding: 1.5rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .class-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .class-header {
@@ -1171,29 +1070,10 @@ body {
   font-size: 1.25rem;
   font-weight: 600;
   color: #111827;
->>>>>>> 5a7a7d96e1984e2d30a9183dba0f204c92096049
 }
 
 .student-count {
   font-size: 0.875rem;
-<<<<<<< HEAD
-  color: #666;
-  margin-left: 1rem;
-}
-
-.class-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.action-btn {
-  padding: 0.5rem 1rem;
-  border: 1px solid #eaeaea;
-  border-radius: 6px;
-  background: white;
-  color: #666;
-  font-size: 0.875rem;
-=======
   color: #6b7280;
 }
 
@@ -1236,12 +1116,16 @@ body {
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   padding: 1.5rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .booking-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 /* Action Buttons */
@@ -1251,43 +1135,11 @@ body {
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
->>>>>>> 5a7a7d96e1984e2d30a9183dba0f204c92096049
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-<<<<<<< HEAD
-.action-btn:hover {
-  background: #f8f9fa;
-  border-color: #d1d1d1;
-}
-
-.table-container {
-  overflow-x: auto;
-}
-
-.student-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.student-table th,
-.student-table td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid #eaeaea;
-}
-
-.student-table th {
-  font-weight: 600;
-  color: #333;
-  background: #f8f9fa;
-}
-
-.student-table tr:hover {
-  background: #f8f9fa;
-=======
 .action-btn.primary {
   background-color: #2563eb;
   color: white;
@@ -1321,5 +1173,4 @@ body {
 .action-btn.small {
   padding: 0.25rem 0.75rem;
   font-size: 0.875rem;
->>>>>>> 5a7a7d96e1984e2d30a9183dba0f204c92096049
 }

@@ -6,6 +6,7 @@ const {
   desktopCapturer,
 } = require("electron");
 const path = require("node:path");
+const { exec, spawn } = require("child_process");
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -31,6 +32,62 @@ const createWindow = () => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+
+  // const kioskWindow = new BrowserWindow({
+  //   width: 800,
+  //   height: 600,
+  //   webPreferences: {
+  //     preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+  //     nodeIntegration: true,
+  //   },
+  // });
+  //
+  // // and load the index.html of the app.
+  // kioskWindow.loadURL(KIOSK_WINDOW_WEBPACK_ENTRY);
+  //
+  // // kioskWindow.loadURL("data:text/html,<h1>Embedded App Test</h1>");
+  // //Remove the default menu bar
+  // kioskWindow.removeMenu();
+  //
+  // kioskWindow.once("ready-to-show", () => {
+  //   setTimeout(() => {
+  //     xid = kioskWindow.getNativeWindowHandle().readUInt32LE(0); // Get native XID
+  //     console.log("Found XID:", xid);
+  //
+  //     // Launch Firefox inside the Electron window (as an example)
+  //     appProcess = spawn("firefox");
+  //
+  //     setTimeout(() => {
+  //       // Get the window ID of the newly launched Firefox window
+  //       exec("xdotool search --onlyvisible --class firefox", (err, stdout) => {
+  //         if (err || !stdout) {
+  //           console.error("Failed to find Firefox window:", err);
+  //           return;
+  //         }
+  //
+  //         appWindowId = stdout.trim().split("\n")[0]; // Ensure only the first window ID is used
+  //         console.log("Found App Window ID:", appWindowId);
+  //
+  //         // Reparent Firefox inside Electron
+  //         exec(`xdotool windowreparent ${appWindowId} ${xid}`, (err) => {
+  //           if (err) {
+  //             console.error("Failed to embed app:", err);
+  //           } else {
+  //             console.log("Successfully embedded app inside Electron.");
+  //           }
+  //         });
+  //
+  //         exec(`xdotool windowsize ${appWindowId} 400 300`, (err) => {
+  //           if (err) {
+  //             console.error("Failed to resize app:", err);
+  //           } else {
+  //             console.log("Successfully embedded resized inside Electron.");
+  //           }
+  //         });
+  //       });
+  //     }, 3000); // Wait for the app to start
+  //   }, 2000);
+  // });
 };
 
 // This method will be called when Electron has finished
@@ -52,6 +109,14 @@ app.whenReady().then(() => {
   });
 
   createWindow();
+
+  // ipcMain.handle("startKiosk", () => {
+  //   if (!kioskWindow) {
+  //     createKioskWindow();
+  //   } else {
+  //     kioskWindow.focus();
+  //   }
+  // });
 
   session.defaultSession.setDisplayMediaRequestHandler(
     (request, callback) => {

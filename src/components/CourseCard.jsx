@@ -19,10 +19,7 @@ const CourseCard = ({ course }) => {
             className="course-icon"
             style={{ backgroundColor: course.color }}
           >
-            <span
-              className="material-icons"
-              style={{ color: "white" }}
-            >
+            <span className="material-icons" style={{ color: "white" }}>
               {course.icon}
             </span>
           </div>
@@ -45,9 +42,9 @@ const CourseCard = ({ course }) => {
       </div>
 
       {showClassList && (
-        <ClassListWindow 
-          course={course} 
-          onClose={() => setShowClassList(false)} 
+        <ClassListWindow
+          course={course}
+          onClose={() => setShowClassList(false)}
         />
       )}
     </>

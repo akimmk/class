@@ -4,16 +4,10 @@ import { useAuth } from "../context/AuthContext.jsx";
 import logo from "../assets/classpilot-logo.svg";
 
 const Sidebar = () => {
-<<<<<<< HEAD
   const { isTeacher, isStudent } = useAuth();
 
   const teacherNavItems = [
     { icon: "dashboard", label: "Teacher Dashboard", path: "/teacher" },
-=======
-  const navItems = [
-    { icon: "dashboard", label: "Dashboard", path: "/" },
-    { icon: "school", label: "Teacher Dashboard", path: "/teacher" },
->>>>>>> 5a7a7d96e1984e2d30a9183dba0f204c92096049
     { icon: "book", label: "Courses", path: "/courses" },
     { icon: "schedule", label: "Classes", path: "/classes" },
     { icon: "videocam", label: "Streaming", path: "/streaming" },
