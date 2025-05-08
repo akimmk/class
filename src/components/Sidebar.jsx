@@ -1,15 +1,26 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
 import logo from "../assets/classpilot-logo.svg";
 
 const Sidebar = () => {
-  const navItems = [
-    { icon: "dashboard", label: "Dashboard", path: "/" },
+  const { isTeacher, isStudent } = useAuth();
+
+  const teacherNavItems = [
+    { icon: "dashboard", label: "Teacher Dashboard", path: "/teacher" },
     { icon: "book", label: "Courses", path: "/courses" },
     { icon: "schedule", label: "Classes", path: "/classes" },
     { icon: "videocam", label: "Streaming", path: "/streaming" },
+  ];
+
+  const studentNavItems = [
+    { icon: "dashboard", label: "Dashboard", path: "/" },
+    { icon: "book", label: "Courses", path: "/courses" },
+    { icon: "schedule", label: "Classes", path: "/classes" },
     { icon: "play_circle", label: "View Stream", path: "/consumer" },
   ];
+
+  const navItems = isTeacher() ? teacherNavItems : studentNavItems;
 
   return (
     <div className="sidebar">
