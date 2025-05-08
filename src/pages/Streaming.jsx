@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { getLocalStream, selectSource } from "../utils/mediasoup";
+import { getLocalStream, selectSource, replaceProducerTrack } from "../utils/mediasoup";
 
 const Streaming = () => {
   const [isPreviewActive, setIsPreviewActive] = useState(false);
@@ -11,6 +11,7 @@ const Streaming = () => {
     fps: 30
   });
   const previewVideoRef = useRef(null);
+  const currentStreamRef = useRef(null);
 
   const handleStartPreview = async () => {
     try {
@@ -46,6 +47,11 @@ const Streaming = () => {
 
   const handleSelectSource = async (source) => {
     try {
+      // Stop the current stream if it exists
+      if (currentStreamRef.current) {
+        currentStreamRef.current.getTracks().forEach(track => track.stop());
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: false,
         video: {
@@ -58,10 +64,19 @@ const Streaming = () => {
         },
       });
 
+      // Store the new stream reference
+      currentStreamRef.current = stream;
+
       if (previewVideoRef.current) {
         previewVideoRef.current.srcObject = stream;
       }
       setSelectedSource(source);
+      
+      // If we're currently streaming, replace the track
+      if (isStreaming) {
+        const videoTrack = stream.getVideoTracks()[0];
+        await replaceProducerTrack(videoTrack);
+      }
       
       // Hide the source container after selection
       const container = document.getElementById("sourceContainer");
@@ -83,7 +98,11 @@ const Streaming = () => {
 
   const handleStopStreaming = () => {
     setIsStreaming(false);
-    // Add logic to stop streaming here
+    // Stop the current stream
+    if (currentStreamRef.current) {
+      currentStreamRef.current.getTracks().forEach(track => track.stop());
+      currentStreamRef.current = null;
+    }
   };
 
   return (

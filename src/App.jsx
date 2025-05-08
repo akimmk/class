@@ -72,6 +72,7 @@ const App = () => {
             <Route path="courses" element={<Course />} />
             <Route path="classes" element={<Classes />} />
             <Route path="consumer" element={<Consumer />} />
+            <Route path="teacher" element={<TeacherDashboard />} />
           </Route>
         </Routes>
       </HashRouter>
