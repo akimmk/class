@@ -4,6 +4,13 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { authService } from "../utils/api";
 
 const Login = () => {
+<<<<<<< HEAD
+=======
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+>>>>>>> 2a8d13f (login integrated)
   const navigate = useNavigate();
   const { login } = useAuth();
   const [username, setUsername] = useState("");
@@ -15,6 +22,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+<<<<<<< HEAD
     setIsLoading(true);
 
     try {
@@ -26,6 +34,43 @@ const Login = () => {
       setError(error.message || "Failed to login. Please try again.");
     } finally {
       setIsLoading(false);
+=======
+    setLoading(true);
+    try {
+      const response = await fetch("http://10.139.27.89:8080/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await response.json();
+      
+      if (response.ok && data.accessToken && data.refreshToken) {
+        // Only login if we have both valid tokens
+        login(username);
+        console.log(data);
+        // Store both tokens in localStorage for future authenticated requests
+        localStorage.setItem('accessToken', data.accessToken);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        navigate("/");
+      } 
+      // else {
+      //   // Handle different types of error responses
+      //   if (response.status === 401) {
+      //     setError("Invalid username or password");
+      //   } else if (response.status === 400) {
+      //     setError(data.message || "Please check your input");
+      //   } else if (response.status === 404) {
+      //     setError("User not found");
+      //   } else {
+      //     setError(data.message || "An error occurred during login");
+      //   }
+      // }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Invalid username or password");
+    } finally {
+      setLoading(false);
+>>>>>>> 2a8d13f (login integrated)
     }
   };
 
@@ -59,7 +104,11 @@ const Login = () => {
                 placeholder="Enter your username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+<<<<<<< HEAD
                 disabled={isLoading}
+=======
+                disabled={loading}
+>>>>>>> 2a8d13f (login integrated)
               />
             </div>
             <div className="relative">
@@ -73,7 +122,11 @@ const Login = () => {
                 placeholder="••••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+<<<<<<< HEAD
                 disabled={isLoading}
+=======
+                disabled={loading}
+>>>>>>> 2a8d13f (login integrated)
               />
               <button
                 type="button"
@@ -94,30 +147,30 @@ const Login = () => {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
+<<<<<<< HEAD
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
                 disabled={isLoading}
+=======
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+>>>>>>> 2a8d13f (login integrated)
               />
               <label
                 htmlFor="remember-me"
-                className="ml-2 block text-sm text-gray-600"
+                className="ml-2 block text-sm text-gray-900"
               >
                 Remember me
               </label>
             </div>
-            <div className="text-sm">
-              <a
-                href="#"
-                className="font-medium text-blue-600 hover:text-blue-500"
-              >
-                Forgot Password?
-              </a>
-            </div>
           </div>
 
           {error && (
-            <div className="text-red-500 text-sm text-center">{error}</div>
+            <div className="p-3 mb-4 text-sm text-red-700 bg-red-100 rounded-lg flex items-center">
+              <span className="material-icons mr-2 text-red-500">error</span>
+              {error}
+            </div>
           )}
 
+<<<<<<< HEAD
           <button
             type="submit"
             className="w-full px-4 py-3 text-white font-medium bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -125,6 +178,16 @@ const Login = () => {
           >
             {isLoading ? "Signing in..." : "Sign in"}
           </button>
+=======
+          <div>
+            <button
+              type="submit"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Sign in
+            </button>
+          </div>
+>>>>>>> 2a8d13f (login integrated)
         </form>
       </div>
     </div>

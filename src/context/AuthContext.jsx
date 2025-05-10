@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+<<<<<<< HEAD
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     
@@ -21,10 +22,21 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
       }
+=======
+    // Check if user is logged in on mount
+    const accessToken = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
+    const username = localStorage.getItem('username');
+    
+    if (accessToken && refreshToken && username) {
+      setIsAuthenticated(true);
+      setUser({ username });
+>>>>>>> 2a8d13f (login integrated)
     }
     setIsLoading(false);
   }, []);
 
+<<<<<<< HEAD
   const login = useCallback((userData) => {
     setUser(userData);
     setIsAuthenticated(true);
@@ -35,6 +47,18 @@ export const AuthProvider = ({ children }) => {
   const logout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+=======
+  const login = (username) => {
+    localStorage.setItem('username', username);
+    setIsAuthenticated(true);
+    setUser({ username });
+  };
+
+  const logout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('username');
+>>>>>>> 2a8d13f (login integrated)
     setIsAuthenticated(false);
     setUser(null);
   }, []);
