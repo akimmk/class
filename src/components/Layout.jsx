@@ -1,7 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar.jsx";
-import defaultAvatar from "../assets/default-avatar.svg";
 import { useAuth } from "../context/AuthContext.jsx";
 
 const Layout = () => {
@@ -20,7 +19,7 @@ const Layout = () => {
             <span className="material-icons text-gray-600 cursor-pointer">notifications</span>
           </div>
           <div className="user-profile flex items-center gap-2">
-            <img src={defaultAvatar} alt="User avatar" className="avatar w-10 h-10 rounded-full" />
+           <span className="material-icons">account_circle</span>
           </div>
           </div>
         </div>

@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
-import logo from "../assets/classpilot-logo.svg";
 
 const Sidebar = () => {
   const { isTeacher, isStudent, isAdmin, logout } = useAuth();
@@ -43,7 +42,7 @@ const Sidebar = () => {
     <div className="sidebar flex flex-col h-full">
       <div>
         <div className="sidebar-header">
-          <img src={logo} alt="Logo" className="logo" />
+          <span className="material-icons">school</span>
           <h1 className="brand">ClassPilot</h1>
         </div>
 
