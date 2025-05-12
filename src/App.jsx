@@ -12,7 +12,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import "./index.css";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
-  const { isAuthenticated, isTeacher, isStudent } = useAuth();
+  const { isAuthenticated, isTeacher, isStudent, isAdmin } = useAuth();
   const location = useLocation();
 
   const redirectPath = useMemo(() => {
@@ -21,16 +21,19 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     }
 
     if (allowedRoles) {
-      if (allowedRoles.includes("teacher") && !isTeacher()) {
-        return "/";
+      if (allowedRoles.includes("TEACHER") && !isTeacher()) {
+        return "/student";
       }
-      if (allowedRoles.includes("student") && !isStudent()) {
+      if (allowedRoles.includes("STUDENT") && !isStudent()) {
+        return "/teacher";
+      }
+      if (allowedRoles.includes("ADMIN") && !isAdmin()) {
         return "/teacher";
       }
     }
 
     return null;
-  }, [isAuthenticated, isTeacher, isStudent, allowedRoles]);
+  }, [isAuthenticated, isTeacher, isStudent, isAdmin, allowedRoles]);
 
   if (redirectPath) {
     return <Navigate to={redirectPath} state={{ from: location }} replace />;
@@ -44,13 +47,17 @@ const App = () => {
     <AuthProvider>
       <HashRouter>
         <Routes>
+          {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           
+          {/* Redirect root to login if not authenticated */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+
           {/* Teacher Routes */}
           <Route
             path="/teacher"
             element={
-              <ProtectedRoute allowedRoles={["teacher"]}>
+              <ProtectedRoute allowedRoles={["TEACHER"]}>
                 <Layout />
               </ProtectedRoute>
             }
@@ -61,9 +68,9 @@ const App = () => {
 
           {/* Student Routes */}
           <Route
-            path="/"
+            path="/student"
             element={
-              <ProtectedRoute allowedRoles={["student"]}>
+              <ProtectedRoute allowedRoles={["STUDENT"]}>
                 <Layout />
               </ProtectedRoute>
             }
@@ -72,8 +79,24 @@ const App = () => {
             <Route path="courses" element={<Course />} />
             <Route path="classes" element={<Classes />} />
             <Route path="consumer" element={<Consumer />} />
-            <Route path="teacher" element={<TeacherDashboard />} />
           </Route>
+
+          {/* Admin Routes */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN"]}>
+                <Layout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="courses" element={<Course />} />
+            <Route path="classes" element={<Classes />} />
+          </Route>
+
+          {/* Catch all route - redirect to login */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </HashRouter>
     </AuthProvider>

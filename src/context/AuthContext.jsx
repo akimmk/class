@@ -8,60 +8,34 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-<<<<<<< HEAD
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-    
-    if (token && userData) {
-      try {
-        const parsedUser = JSON.parse(userData);
-        setUser(parsedUser);
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-      }
-=======
     // Check if user is logged in on mount
     const accessToken = localStorage.getItem('accessToken');
     const refreshToken = localStorage.getItem('refreshToken');
     const username = localStorage.getItem('username');
+    const role = localStorage.getItem('role');
     
-    if (accessToken && refreshToken && username) {
+    if (accessToken && refreshToken && username && role) {
       setIsAuthenticated(true);
-      setUser({ username });
->>>>>>> 2a8d13f (login integrated)
+      setUser({ username, role });
     }
     setIsLoading(false);
   }, []);
 
-<<<<<<< HEAD
-  const login = useCallback((userData) => {
-    setUser(userData);
-    setIsAuthenticated(true);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', userData.token);
-  }, []);
-
-  const logout = useCallback(() => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-=======
-  const login = (username) => {
+  const login = (username, role) => {
     localStorage.setItem('username', username);
+    localStorage.setItem('role', role);
     setIsAuthenticated(true);
-    setUser({ username });
+    setUser({ username, role });
   };
 
   const logout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('username');
->>>>>>> 2a8d13f (login integrated)
+    localStorage.removeItem('role');
     setIsAuthenticated(false);
     setUser(null);
-  }, []);
+  };
 
   const isTeacher = useCallback(() => {
     return user?.role === "TEACHER";
@@ -69,6 +43,10 @@ export const AuthProvider = ({ children }) => {
 
   const isStudent = useCallback(() => {
     return user?.role === "STUDENT";
+  }, [user]);
+
+  const isAdmin = useCallback(() => {
+    return user?.role === "ADMIN";
   }, [user]);
 
   if (isLoading) {
@@ -84,6 +62,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         isTeacher,
         isStudent,
+        isAdmin,
       }}
     >
       {children}
