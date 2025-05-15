@@ -10,7 +10,7 @@ const CourseCard = ({ course }) => {
 
   return (
     <>
-      <div className="course-card">
+      <div className="course-card shadow-md round">
         <div
           className="course-header"
           style={{ backgroundColor: course.color + "10" }}
@@ -24,12 +24,12 @@ const CourseCard = ({ course }) => {
             </span>
           </div>
         </div>
-        <div className="course-content">
-          <h3 className="course-name">{course.name}</h3>
-          <p className="course-teacher">{course.teacher}</p>
+        <div className="course-content text-black">
+          <h3 className="course-name">{course.courseName}</h3>
+          <p className="course-teacher">Instructor : {course.instructors}</p>
           <div className="course-stats">
             <div className="stat">
-              <p>Credit Hour : {course.credit}</p>
+              <p>Credit Hour : {course.credits}</p>
             </div>
           </div>
           <div className="course-actions">

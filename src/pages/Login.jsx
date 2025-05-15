@@ -34,7 +34,11 @@ const Login = () => {
     try {
       const response = await fetch("http://10.139.27.89:8080/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        credentials: "include",
         body: JSON.stringify({ username, password })
       });
       const data = await response.json();
