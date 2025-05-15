@@ -1,68 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CourseCard from "../components/CourseCard.jsx";
+import { courseService } from "../utils/api";
 
 const Course = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [courses, setCourses] = useState([]); // Ensure initial state is an array
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const courses = [
-    {
-      id: 1,
-      name: "Physics",
-      teacher: "Dr. Sarah Wilson",
-      credit: 68,
-      color: "#FF4500",
-      icon: "science"
-    },
-    {
-      id: 2,
-      name: "Mathematics",
-      teacher: "Prof. John Smith",
-      credit: 75,
-      color: "#32CD32",
-      icon: "functions"
-    },
-    {
-      id: 3,
-      name: "Chemistry",
-      teacher: "Dr. Emily Brown",
-      credit: 45,
-      color: "#FFD700",
-      icon: "science"
-    },
-    {
-      id: 4,
-      name: "Biology",
-      teacher: "Prof. Michael Chen",
-      credit: 90,
-      color: "#4169E1",
-      icon: "biotech"
-    },
-    {
-      id: 5,
-      name: "English Literature",
-      teacher: "Ms. Rachel Green",
-      credit: 82,
-      color: "#FF69B4",
-      icon: "menu_book"
-    },
-    {
-      id: 6,
-      name: "Computer Science",
-      teacher: "Mr. David Miller",
-      credit: 60,
-      nextClass: "Monday, 3:45 PM",
-      totalLessons: 32,
-      completedLessons: 19,
-      color: "#9370DB",
-      icon: "computer"
-    }
-  ];
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const data = await courseService.fetchCourses();
+        setCourses(data); // `data` is already the `content` array
+      } catch (err) {
+        setError(err.message || "Failed to fetch courses");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const filteredCourses = courses.filter(course => {
-    return course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           course.teacher.toLowerCase().includes(searchTerm.toLowerCase());
+    fetchCourses();
+  }, []);
+
+  const filteredCourses = courses.filter((course) => {
+    // Add defensive checks for `courseName` and `teacher`
+    const courseName = course.courseName || ""; // Default to an empty string if undefined
+    const teacher = course.teacher || ""; // Default to an empty string if undefined
+    console.log(course);
+    return (
+      courseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      teacher.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   });
+
+  if (loading) return <p>Loading courses...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="courses-container">
@@ -78,19 +51,11 @@ const Course = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="filter-options">
-            <button
-              className="filter-btn active"
-              onClick={() => setSelectedFilter('all')}
-            >
-              All Courses
-            </button>
-          </div>
         </div>
       </div>
 
       <div className="courses-grid">
-        {filteredCourses.map(course => (
+        {filteredCourses.map((course) => (
           <CourseCard key={course.id} course={course} />
         ))}
       </div>
