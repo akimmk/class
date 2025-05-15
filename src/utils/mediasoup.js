@@ -1,23 +1,20 @@
 const mediasoupClient = require("mediasoup-client");
-const io = require("socket.io-client");
-
-export const goConsume = (onTrack) => {
-  goConnect(false, onTrack);
-};
-
-const socket = io("ws://localhost:3000/mediasoup");
-
-socket.on("connection-success", ({ socketId, existsProducer }) => {
-  console.log("Socket connected:", socketId, existsProducer);
-});
+const axios = require("axios");
 
 let device;
 let rtpCapabilities;
 let producerTransport;
-let consumerTransport;
+let consumerTransports = [];
 let producer;
 let consumer;
 let isProducer = false;
+let username;
+const baseUrl = "http://10.139.27.52:3000";
+
+let audioProducer;
+let videoProducer;
+let producerId;
+let currentRoomName;
 
 let params = {
   // mediasoup params
@@ -41,6 +38,18 @@ let params = {
   codecOptions: {
     videoGoogleStartBitrate: 1000,
   },
+};
+
+let videoParams = { params };
+let audioParams;
+let consumingTranspors = [];
+
+export const goConsume = (user, room, onTrack) => {
+  if (user !== null) {
+    username = user.username;
+  }
+  currentRoomName = room;
+  goConnect(false, onTrack);
 };
 
 export const getLocalStream = async () => {
@@ -75,7 +84,12 @@ export const getLocalStream = async () => {
   });
 };
 
-export const selectSource = async (source) => {
+export const selectSource = async (source, user, room) => {
+  if (user !== null) {
+    username = user.username;
+  }
+  currentRoomName = room;
+
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
@@ -88,157 +102,241 @@ export const selectSource = async (source) => {
     },
   });
 
-  // localVideo.srcObject = stream;
-  const track = stream.getVideoTracks()[0];
-  params = {
-    track,
-    ...params,
-  };
+  console.log(stream);
+  // INFO: test
+  // audioParams = { track: stream.getAudioTracks()[0], ...audioParams };
+  videoParams = { track: stream.getVideoTracks()[0], ...videoParams };
 
-  goConnect(true);
+  isProducer = true;
+  joinRoom();
+};
+
+const joinRoom = () => {
+  axios
+    .get(
+      `${baseUrl}/api/stream/joinRoom?user=${username}&room=${currentRoomName}`,
+    )
+    .then((response) => {
+      rtpCapabilities = response.data.rtpCapabilities;
+      createDevice();
+    })
+    .catch((error) => {
+      console.error("Error: ", error);
+    });
 };
 
 const goConnect = (producerOrConsumer, onTrack) => {
   isProducer = producerOrConsumer;
-  console.log(device);
-  device === undefined ? getRtpCapabilities() : goCreateTransport(onTrack);
+  device === undefined ? joinRoom() : goCreateTransport(onTrack, isProducer);
 };
 
 const goCreateTransport = (onTrack) => {
+  console.log("Go Create ", isProducer);
   isProducer ? createSendTransport() : createRecvTransport(onTrack);
 };
 
 const createRecvTransport = async (onTrack) => {
-  await socket.emit(
-    "createWebRtcTransport",
-    { sender: false },
-    ({ params }) => {
+  axios
+    .get(
+      `${baseUrl}/api/stream/createTransport?user=${username}&room=${currentRoomName}&consumer=true`,
+    )
+    .then((response) => {
+      const params = response.data.params;
+
       if (params.error) {
-        console.log(params.error);
+        console.error(params.error);
         return;
       }
 
       console.log(params);
+      let consumerTransport;
 
-      consumerTransport = device.createRecvTransport(params);
+      try {
+        consumerTransport = device.createRecvTransport(params);
+      } catch (error) {
+        console.error(error);
+        return;
+      }
 
       consumerTransport.on(
         "connect",
         async ({ dtlsParameters }, callback, errback) => {
           try {
-            await socket.emit("transport-recv-connect", {
-              dtlsParameters,
-            });
-
-            callback();
+            axios
+              .post(`${baseUrl}/api/stream/connectRecvTransport`, {
+                serverId: params.id,
+                dtlsParameters,
+              })
+              .then((response) => {
+                if (response.status == 200) {
+                  callback();
+                }
+              });
           } catch (error) {
             errback(error);
           }
         },
       );
 
-      connectRecvTransport(onTrack);
-    },
-  );
+      connectRecvTransport(onTrack, params.id, consumerTransport);
+    });
 };
 
-const connectRecvTransport = async (onTrack) => {
-  await socket.emit(
-    "consume",
-    {
-      rtpCapabilities: device.rtpCapabilities,
-    },
-    async ({ params }) => {
-      if (params.error) {
-        console.log("Cannot Consume");
-        return;
-      }
+const getProducer = async () => {
+  axios
+    .get(
+      `${baseUrl}/api/stream/getProducers?user=${username}&room=${currentRoomName}`,
+    )
+    .then((response) => {
+      producerId = response.data.id;
+      console.log(response);
+      console.log(producerId);
+    });
+};
 
-      console.log(params);
-      consumer = await consumerTransport.consume({
-        id: params.id,
-        producerId: params.producerId,
-        kind: params.kind,
-        rtpParameters: params.rtpParameters,
-      });
+const connectRecvTransport = async (onTrack, serverId, consumerTransport) => {
+  console.log(consumerTransport);
+  axios
+    .get(
+      `${baseUrl}/api/stream/getProducers?user=${username}&room=${currentRoomName}`,
+    )
+    .then((response) => {
+      producerId = response.data.id;
+      axios
+        .post(`${baseUrl}/api/stream/consume`, {
+          userId: username,
+          serverId: serverId,
+          remoteProducerId: producerId,
+          rtpCapabilities: device.rtpCapabilities,
+          roomName: currentRoomName,
+        })
+        .then(async (response) => {
+          const params = response.data.params;
 
-      const { track } = consumer;
+          if (params.error) {
+            console.error(params.error);
+            return;
+          }
 
-      // Call the callback with the track
-      if (onTrack) {
-        onTrack(track);
-      }
+          console.log("Consumer Params ", params);
 
-      socket.emit("consumer-resume");
-    },
-  );
+          const consumer = await consumerTransport.consume({
+            id: params.id,
+            producerId: params.producerId,
+            kind: params.kind,
+            rtpParameters: params.rtpParameters,
+          });
+
+          consumerTransports = [
+            ...consumerTransports,
+            {
+              consumerTransport,
+              serverId: params.id,
+              producerId: producerId,
+              consumer,
+            },
+          ];
+
+          const { track } = consumer;
+
+          console.log(track);
+          // Call the callback with the track
+          if (onTrack) {
+            onTrack(track);
+          }
+
+          axios.get(
+            `${baseUrl}/api/stream/resume?serverId=${params.serverConsumerId}`,
+          );
+        });
+    });
 };
 
 const createSendTransport = () => {
-  socket.emit("createWebRtcTransport", { sender: true }, ({ params }) => {
-    if (params.error) {
-      console.log(params.error);
-      return;
-    }
+  axios
+    .get(
+      `${baseUrl}/api/stream/createTransport?user=${username}&room=${currentRoomName}&consumer=false`,
+    )
+    .then((response) => {
+      let params = response.data.params;
+      if (params.error) {
+        console.error(response.data.params.error);
+        return;
+      }
 
-    console.log("send Transport created:", params);
-    producerTransport = device.createSendTransport(params);
+      console.log("Creating Send Transport");
 
-    producerTransport.on(
-      "connect",
-      async ({ dtlsParameters }, callback, errback) => {
+      console.log(params);
+
+      producerTransport = device.createSendTransport(params);
+
+      producerTransport.on(
+        "connect",
+        async ({ dtlsParameters }, callback, errback) => {
+          try {
+            axios
+              .post(`${baseUrl}/api/stream/connectTransport`, {
+                userId: username,
+                dtlsParameters,
+              })
+              .then((response) => {
+                if (response.status == 200) {
+                  callback();
+                }
+              });
+          } catch (error) {
+            errback(error);
+          }
+        },
+      );
+
+      producerTransport.on("produce", async (parameters, callback, errback) => {
+        console.log(parameters);
         try {
-          await socket.emit("transport-connect", {
-            dtlsParameters,
-          });
-
-          callback();
+          axios
+            .post(`${baseUrl}/api/stream/produceTransport`, {
+              userId: username,
+              kind: parameters.kind,
+              rtpParameters: parameters.rtpParameters,
+              appData: parameters.appData,
+            })
+            .then((response) => callback(response.data.id));
+          // TODO: handle producers exsist
         } catch (error) {
           errback(error);
         }
-      },
-    );
+      });
 
-    producerTransport.on("produce", async (parameters, callback, errback) => {
-      try {
-        // see server's socket.on('transport-produce', ...)
-        await socket.emit(
-          "transport-produce",
-          {
-            kind: parameters.kind,
-            rtpParameters: parameters.rtpParameters,
-            appData: parameters.appData,
-          },
-          ({ id }) => {
-            console.log("Transport produced:", id);
-            // Tell the transport that parameters were transmitted and provide it with the
-            // server side producer's id.
-            callback({ id });
-          },
-        );
-      } catch (error) {
-        errback(error);
-      }
+      connectSendTransport();
     });
-
-    connectSendTransport();
-  });
 };
 
 const connectSendTransport = async () => {
-  producer = await producerTransport.produce(params);
-  console.log(producer);
+  // audioProducer = await producerTransport.produce(audioParams);
+  videoProducer = await producerTransport.produce(videoParams);
 
-  producer.on("trackended", () => {
-    console.log("track ended");
+  // audioProducer.on("trackended", () => {
+  //   console.log("audio track ended");
+  //
+  //   // TODO: close audio track
+  // });
+  //
+  // audioProducer.on("transportclose", () => {
+  //   console.log("audio transport ended");
+  //
+  //   // TODO: close audio track
+  // });
 
-    // close video track
+  videoProducer.on("trackended", () => {
+    console.log("video track ended");
+
+    // TODO: close video track
   });
 
-  producer.on("transportclose", () => {
-    console.log("transport ended");
+  videoProducer.on("transportclose", () => {
+    console.log("video transport ended");
 
-    // close video track
+    // TODO: close video track
   });
 };
 

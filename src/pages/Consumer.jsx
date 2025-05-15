@@ -1,12 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import { goConsume } from "../utils/mediasoup";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const Consumer = () => {
+  const { user } = useAuth();
+  const [roomName, setRoomName] = useState("");
   const [isStreamActive, setIsStreamActive] = useState(false);
   const [streamStats, setStreamStats] = useState({
     fps: 0,
     resolution: "0x0",
-    bitrate: "0 kbps"
+    bitrate: "0 kbps",
   });
   const videoRef = useRef(null);
 
@@ -20,7 +23,7 @@ const Consumer = () => {
           setStreamStats({
             fps: settings.frameRate || 0,
             resolution: `${settings.width || 0}x${settings.height || 0}`,
-            bitrate: "Calculating..." // You would calculate this from actual stream data
+            bitrate: "Calculating...", // You would calculate this from actual stream data
           });
         }
       }
@@ -29,14 +32,18 @@ const Consumer = () => {
     return () => {
       clearInterval(statsInterval);
       if (videoRef.current && videoRef.current.srcObject) {
-        videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+        videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
       }
     };
   }, []);
 
   const handleConnect = async () => {
+    if (!roomName) {
+      alert("Please enter a room name.");
+      return;
+    }
     try {
-      await goConsume((track) => {
+      await goConsume(user, roomName, (track) => {
         if (videoRef.current) {
           videoRef.current.srcObject = new MediaStream([track]);
           setIsStreamActive(true);
@@ -59,6 +66,20 @@ const Consumer = () => {
                 <span className="text-red-500 font-medium">LIVE</span>
               </div>
             )}
+          </div>
+
+          {/* Room Name Input */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Room Name
+            </label>
+            <input
+              type="text"
+              value={roomName}
+              onChange={(e) => setRoomName(e.target.value)}
+              placeholder="Enter room name"
+              className="w-full p-2 border rounded-lg"
+            />
           </div>
 
           {/* Video Display */}
@@ -96,11 +117,11 @@ const Consumer = () => {
           <div className="flex gap-4">
             <button
               onClick={handleConnect}
-              disabled={isStreamActive}
+              disabled={isStreamActive || !roomName}
               className={`flex-1 py-2 px-4 rounded-lg transition-colors ${
                 isStreamActive
                   ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-500 hover:bg-blue-600 text-white"
+                  : "bg-blue-500 hover:bg-blue-600 text-white disabled:bg-gray-400 disabled:cursor-not-allowed"
               }`}
             >
               {isStreamActive ? "Connected" : "Connect to Stream"}
@@ -133,4 +154,5 @@ const Consumer = () => {
   );
 };
 
-export default Consumer; 
+export default Consumer;
+

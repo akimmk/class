@@ -1,28 +1,45 @@
 import React, { useState, useRef } from "react";
-import { getLocalStream, selectSource, replaceProducerTrack } from "../utils/mediasoup";
+import {
+  getLocalStream,
+  selectSource,
+  replaceProducerTrack,
+} from "../utils/mediasoup";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const Streaming = () => {
+  const { user } = useAuth();
   const [isPreviewActive, setIsPreviewActive] = useState(false);
   const [selectedSource, setSelectedSource] = useState(null);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [roomName, setRoomName] = useState("");
   const [streamOptions, setStreamOptions] = useState({
     quality: "high",
     audio: false,
-    fps: 30
+    fps: 30,
   });
   const previewVideoRef = useRef(null);
   const currentStreamRef = useRef(null);
 
   const handleStartPreview = async () => {
     try {
-      const sources = await window.electronAPI.getDesktopSources(["screen", "window"]);
+      const sources = await window.electronAPI.getDesktopSources([
+        "screen",
+        "window",
+      ]);
       const container = document.getElementById("sourceContainer");
       container.innerHTML = "";
       container.style.display = "grid";
 
       sources.forEach((source) => {
         const div = document.createElement("div");
-        div.classList.add("source-box", "cursor-pointer", "p-2", "border", "rounded-lg", "hover:bg-gray-100");
+        div.classList.add(
+          "source-box",
+          "cursor-pointer",
+          "p-2",
+          "border",
+          "rounded-lg",
+          "hover:bg-gray-100",
+        );
 
         const img = document.createElement("img");
         img.src = source.thumbnail;
@@ -49,7 +66,7 @@ const Streaming = () => {
     try {
       // Stop the current stream if it exists
       if (currentStreamRef.current) {
-        currentStreamRef.current.getTracks().forEach(track => track.stop());
+        currentStreamRef.current.getTracks().forEach((track) => track.stop());
       }
 
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -71,28 +88,29 @@ const Streaming = () => {
         previewVideoRef.current.srcObject = stream;
       }
       setSelectedSource(source);
-      
+
       // If we're currently streaming, replace the track
       if (isStreaming) {
         const videoTrack = stream.getVideoTracks()[0];
         await replaceProducerTrack(videoTrack);
       }
-      
+
       // Hide the source container after selection
       const container = document.getElementById("sourceContainer");
       if (container) {
         container.style.display = "none";
       }
-      
     } catch (error) {
       console.error("Error selecting source:", error);
     }
   };
 
   const handleStartStreaming = () => {
-    if (selectedSource) {
-      selectSource(selectedSource);
+    if (selectedSource && roomName) {
+      selectSource(selectedSource, user, roomName);
       setIsStreaming(true);
+    } else {
+      alert("Please select a source and enter a room name.");
     }
   };
 
@@ -100,7 +118,7 @@ const Streaming = () => {
     setIsStreaming(false);
     // Stop the current stream
     if (currentStreamRef.current) {
-      currentStreamRef.current.getTracks().forEach(track => track.stop());
+      currentStreamRef.current.getTracks().forEach((track) => track.stop());
       currentStreamRef.current = null;
     }
   };
@@ -128,23 +146,47 @@ const Streaming = () => {
             />
           </div>
           <div className="space-y-4">
+            {/* Room Name Input */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Room Name
+              </label>
+              <input
+                type="text"
+                value={roomName}
+                onChange={(e) => setRoomName(e.target.value)}
+                placeholder="Enter room name"
+                className="w-full p-2 border rounded-lg"
+              />
+            </div>
+
             <button
               onClick={handleStartPreview}
               className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
             >
               Select Source
             </button>
-            <div id="sourceContainer" className="grid grid-cols-2 gap-4 mt-4"></div>
+            <div
+              id="sourceContainer"
+              className="grid grid-cols-2 gap-4 mt-4"
+            ></div>
 
             {/* Streaming Options */}
             <div className="mt-6 space-y-4">
               <h3 className="font-semibold">Streaming Options</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Quality</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Quality
+                  </label>
                   <select
                     value={streamOptions.quality}
-                    onChange={(e) => setStreamOptions({...streamOptions, quality: e.target.value})}
+                    onChange={(e) =>
+                      setStreamOptions({
+                        ...streamOptions,
+                        quality: e.target.value,
+                      })
+                    }
                     className="w-full p-2 border rounded-lg"
                   >
                     <option value="low">Low</option>
@@ -153,10 +195,17 @@ const Streaming = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">FPS</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    FPS
+                  </label>
                   <select
                     value={streamOptions.fps}
-                    onChange={(e) => setStreamOptions({...streamOptions, fps: parseInt(e.target.value)})}
+                    onChange={(e) =>
+                      setStreamOptions({
+                        ...streamOptions,
+                        fps: parseInt(e.target.value),
+                      })
+                    }
                     className="w-full p-2 border rounded-lg"
                   >
                     <option value="24">24 FPS</option>
@@ -169,10 +218,17 @@ const Streaming = () => {
                     <input
                       type="checkbox"
                       checked={streamOptions.audio}
-                      onChange={(e) => setStreamOptions({...streamOptions, audio: e.target.checked})}
+                      onChange={(e) =>
+                        setStreamOptions({
+                          ...streamOptions,
+                          audio: e.target.checked,
+                        })
+                      }
                       className="rounded"
                     />
-                    <span className="text-sm font-medium text-gray-700">Include Audio</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      Include Audio
+                    </span>
                   </label>
                 </div>
               </div>
@@ -181,11 +237,11 @@ const Streaming = () => {
             {/* Stream Control Button */}
             <button
               onClick={isStreaming ? handleStopStreaming : handleStartStreaming}
-              disabled={!selectedSource}
+              disabled={!selectedSource || !roomName}
               className={`w-full py-2 px-4 rounded-lg transition-colors ${
                 isStreaming
                   ? "bg-red-500 hover:bg-red-600 text-white"
-                  : "bg-green-500 hover:bg-green-600 text-white disabled:bg-gray-400"
+                  : "bg-green-500 hover:bg-green-600 text-white disabled:bg-gray-400 disabled:cursor-not-allowed"
               }`}
             >
               {isStreaming ? "Stop Streaming" : "Start Streaming"}
@@ -197,4 +253,4 @@ const Streaming = () => {
   );
 };
 
-export default Streaming; 
+export default Streaming;

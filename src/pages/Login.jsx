@@ -14,15 +14,20 @@ const Login = () => {
   const decodeJWT = (token) => {
     try {
       // JWT tokens are in format: header.payload.signature
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map(function (c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join(""),
+      );
 
       return JSON.parse(jsonPayload);
     } catch (error) {
-      console.error('Error decoding JWT:', error);
+      console.error("Error decoding JWT:", error);
       return null;
     }
   };
@@ -35,27 +40,27 @@ const Login = () => {
       const response = await fetch("http://10.139.27.89:8080/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password }),
       });
       const data = await response.json();
-      
+
       if (response.ok && data.accessToken && data.refreshToken) {
         // Store both tokens in localStorage for future authenticated requests
-        localStorage.setItem('accessToken', data.accessToken);
-        localStorage.setItem('refreshToken', data.refreshToken);
-        
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+
         // Decode the JWT to get the role
         const decodedToken = decodeJWT(data.accessToken);
         console.log("Decoded token:", decodedToken);
-        
+
         if (decodedToken && decodedToken.sub) {
           // The sub claim contains "username,ROLE"
-          const [, role] = decodedToken.sub.split(',');
+          const [, role] = decodedToken.sub.split(",");
           console.log("Extracted role:", role);
-          
+
           // Login with username and role
           login(username, role);
-          
+
           // Redirect based on role
           switch (role) {
             case "TEACHER":
