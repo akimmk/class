@@ -1,11 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const CourseCard = ({ course }) => {
+const CourseCard = ({ course, user }) => {
   const navigate = useNavigate();
 
   const handleContinueLearning = () => {
-    navigate(`/student/courses/${course.courseId}`);
+    navigate(`/${user.role.toLowerCase()}/courses/${course.courseId}`);
   };
 
   return (
@@ -26,7 +26,14 @@ const CourseCard = ({ course }) => {
         </div>
         <div className="course-content text-black">
           <h3 className="course-name">{course.courseName}</h3>
-          <p className="course-teacher">Instructor : {course.instructors}</p>
+          {course.instructors && (
+            <p className="course-teacher">Instructor : {course.instructors}</p>
+          )}
+          {course.NoOfStudents && (
+            <p className="no-of-students">
+              Number of Students: {course.NoOfStudents}
+            </p>
+          )}
           <div className="course-stats">
             <div className="stat">
               <p>Credit Hour : {course.credits}</p>

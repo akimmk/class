@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const API_BASE_URL = "http://10.139.27.89:8080"; // API Gateway URL
-const API_BASE_URL = "http://localhost:8080"; // API Gateway URL
+const API_BASE_URL = "http://10.139.27.98:8080"; // API Gateway URL
+// const API_BASE_URL = "http://localhost:8080"; // API Gateway URL
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -30,9 +30,12 @@ export const authService = {
 export const courseService = {
   fetchCourses: async (user) => {
     try {
-      const response = await api.get(
-        `/api/courses/user/${user.userId}/enrolled`,
-      );
+      let response;
+      if (user.role == "STUDENT") {
+        response = await api.get(`/api/courses/user/${user.userId}/enrolled`);
+      } else if (user.role == "TEACHER") {
+        response = await api.get(`/api/courses/user/${user.userId}/assigned`);
+      }
       console.log(response);
       return response.data;
     } catch (error) {
@@ -59,9 +62,9 @@ export const courseService = {
 };
 
 export const classService = {
-  fetchClasses: async (user, courseId) => {
+  fetchClassesCourseId: async (user, courseId) => {
     api
-      .get("/api/classes")
+      .get(`/api/courses/${courseId}`)
       .then((response) => {
         console.log("Fetch Classes Response:", response);
         return response.data;
@@ -70,9 +73,9 @@ export const classService = {
         console.error("Error fetching classes:", error);
       });
   },
-  createClass: async (classData) => {
+  createClass: async (courseId, classData) => {
     api
-      .post("/api/classes", classData)
+      .post(`/api/courses/create/${courseId}/class`, classData)
       .then((response) => {
         console.log(response);
         return response.data;

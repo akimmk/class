@@ -1,30 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { courseService } from "../utils/api";
 
-const CreateClassPopup = ({ onClose, onCreateClass }) => {
+const CreateClassPopup = ({ onClose, onCreateClass, user }) => {
   const [className, setClassName] = useState("");
-  const [students, setStudents] = useState("");
-  const [schedule, setSchedule] = useState("");
-  const [room, setRoom] = useState("");
+  const [description, setDescription] = useState("");
+  const [startingDate, setStartingDate] = useState("");
+  const [endingDate, setEndingDate] = useState("");
+  const [selectedCourseId, setSelectedCourseId] = useState("");
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const coursesData = await courseService.fetchCourses(user);
+        setCourses(coursesData);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+        alert("Failed to fetch courses. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  }, [user]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Basic validation
-    if (!className || !students || !schedule || !room) {
+    if (
+      !className ||
+      !description ||
+      !startingDate ||
+      !endingDate ||
+      !selectedCourseId
+    ) {
       alert("Please fill in all fields.");
       return;
     }
-    // Call the onCreateClass function passed from the parent component
-    onCreateClass({
+
+    // Call the onCreateClass function with the new RoomDTO structure
+    onCreateClass(selectedCourseId, {
       name: className,
-      students: parseInt(students, 10), // Assuming students is a number
-      schedule,
-      room,
+      description,
+      instructionId: user.userId,
+      instructionName: user.username,
+      startingDate: new Date(startingDate),
+      endingDate: new Date(endingDate),
     });
     // Clear form fields and close the popup
     setClassName("");
-    setStudents("");
-    setSchedule("");
-    setRoom("");
+    setDescription("");
+    setStartingDate("");
+    setEndingDate("");
+    setSelectedCourseId("");
     onClose();
   };
 
@@ -34,7 +63,33 @@ const CreateClassPopup = ({ onClose, onCreateClass }) => {
         <h2 className="text-xl font-bold mb-4">Create New Class</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="className">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="courseSelect"
+            >
+              Select Course
+            </label>
+            <select
+              id="courseSelect"
+              value={selectedCourseId}
+              onChange={(e) => setSelectedCourseId(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+              disabled={loading}
+            >
+              <option value="">Select a course...</option>
+              {courses.map((course, index) => (
+                <option key={index} value={course.courseId}>
+                  {course.courseName}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="className"
+            >
               Class Name
             </label>
             <input
@@ -47,40 +102,48 @@ const CreateClassPopup = ({ onClose, onCreateClass }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="students">
-              Number of Students
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="description"
+            >
+              Description
             </label>
-            <input
-              type="number"
-              id="students"
-              value={students}
-              onChange={(e) => setStudents(e.target.value)}
+            <textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="schedule">
-              Schedule
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="startingDate"
+            >
+              Starting Date
             </label>
             <input
-              type="text"
-              id="schedule"
-              value={schedule}
-              onChange={(e) => setSchedule(e.target.value)}
+              type="date"
+              id="startingDate"
+              value={startingDate}
+              onChange={(e) => setStartingDate(e.target.value)}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="room">
-              Room
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="endingDate"
+            >
+              Ending Date
             </label>
             <input
-              type="text"
-              id="room"
-              value={room}
-              onChange={(e) => setRoom(e.target.value)}
+              type="date"
+              id="endingDate"
+              value={endingDate}
+              onChange={(e) => setEndingDate(e.target.value)}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />

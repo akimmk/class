@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateClassPopup from "../components/CreateClassPopup.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+import { classService } from "../utils/api";
 
 const TeacherClasses = () => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
+
+  const { user } = useAuth();
 
   // Sample data - In a real app, this would come from your backend
   const [teacherClasses, setTeacherClasses] = useState([
@@ -26,19 +30,26 @@ const TeacherClasses = () => {
     },
   ]);
 
-  const handleCreateClass = (newClassData) => {
-    // In a real app, you would send this data to your backend
-    console.log("Creating class with data:", newClassData);
-    // For now, just add it to the sample data with a unique ID
-    const newClass = { ...newClassData, id: teacherClasses.length + 1 };
-    setTeacherClasses([...teacherClasses, newClass]);
+  const handleCreateClass = async (courseId, newClassData) => {
+    try {
+      const response = await classService.createClass(courseId, newClassData);
+      setTeacherClasses([...teacherClasses, response]);
+    } catch (error) {
+      console.error("Error creating class:", error);
+      // You might want to show an error message to the user here
+    }
   };
 
   const renderClassCard = (classItem) => (
-    <div key={classItem.id} className="class-card bg-white rounded-lg shadow-md p-4 mb-4">
+    <div
+      key={classItem.id}
+      className="class-card bg-white rounded-lg shadow-md p-4 mb-4"
+    >
       <div className="class-header flex justify-between items-center mb-2">
         <h3 className="text-lg font-semibold">{classItem.name}</h3>
-        <span className="text-sm text-gray-600">{classItem.students} students</span>
+        <span className="text-sm text-gray-600">
+          {classItem.students} students
+        </span>
       </div>
       <div className="class-details text-sm text-gray-700 mb-4">
         <div className="detail-item flex items-center mb-1">
@@ -92,6 +103,7 @@ const TeacherClasses = () => {
         <CreateClassPopup
           onClose={() => setShowPopup(false)}
           onCreateClass={handleCreateClass}
+          user={user}
         />
       )}
     </div>
@@ -99,4 +111,3 @@ const TeacherClasses = () => {
 };
 
 export default TeacherClasses;
-

@@ -86,7 +86,7 @@ export const getLocalStream = async () => {
 
 export const selectSource = async (source, user, room) => {
   if (user !== null) {
-    username = user.username;
+    username = user.userId;
   }
   currentRoomName = room;
 

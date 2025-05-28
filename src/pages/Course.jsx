@@ -57,8 +57,8 @@ const Course = () => {
       </div>
 
       <div className="courses-grid">
-        {filteredCourses.map((course) => (
-          <CourseCard key={course.id} course={course} />
+        {filteredCourses.map((course, index) => (
+          <CourseCard key={index} course={course} user={user} />
         ))}
       </div>
     </div>
