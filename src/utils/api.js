@@ -74,6 +74,25 @@ export const classService = {
         console.error("Error fetching classes:", error);
       });
   },
+  featchClasses: async (user) => {
+    try {
+      let response;
+      if (user.role == "STUDENT") {
+        response = await api.get(`/api/courses/user/${user.userId}/${user.role.toLowerCase()}/classrooms`);
+      } else if (user.role == "TEACHER") {
+        response = await api.get(`/api/courses/user/${user.userId}/instructor/classrooms`);
+      }
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw (
+        error.response?.data || {
+          message: "An error occurred while fetching classes",
+        }
+      );
+    }
+  },
+
   createClass: async (courseId, classData) => {
     try {
       const response = await api.post(`/api/courses/create/${courseId}/class`, classData);

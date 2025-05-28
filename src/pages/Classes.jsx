@@ -1,154 +1,157 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import CreateClassPopup from "../components/CreateClassPopup.jsx";
+import { classService } from "../utils/api";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const Classes = () => {
   const [activeTab, setActiveTab] = useState("live");
+  const [showPopup, setShowPopup] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  const { user } = useAuth();
 
   const handleJoinClass = (joinLink) => {
     navigate(joinLink);
   };
 
-  const liveClasses = [
-    {
-      id: 1,
-      subject: "Physics",
-      teacher: "Dr. Sarah Wilson",
-      time: "10:15 AM - 11:00 AM",
-      duration: "45 mins",
-      students: 28,
-      status: "live",
-      joinLink: "#",
-      color: "#FF4500",
-      icon: "science"
-    },
-    {
-      id: 2,
-      subject: "Mathematics",
-      teacher: "Prof. John Smith",
-      time: "11:00 AM - 11:45 AM",
-      duration: "45 mins",
-      students: 32,
-      status: "live",
-      joinLink: "#",
-      color: "#32CD32",
-      icon: "functions"
-    }
-  ];
+  const [classes, setClasses] = useState([]);
 
-  const scheduledClasses = [
-    {
-      id: 3,
-      subject: "Chemistry",
-      teacher: "Dr. Emily Brown",
-      date: "Tomorrow",
-      time: "09:30 AM - 10:15 AM",
-      duration: "45 mins",
-      students: 30,
-      status: "scheduled",
-      color: "#FFD700",
-      icon: "science"
-    },
-    {
-      id: 4,
-      subject: "Biology",
-      teacher: "Prof. Michael Chen",
-      date: "Wednesday",
-      time: "02:30 PM - 03:15 PM",
-      duration: "45 mins",
-      students: 25,
-      status: "scheduled",
-      color: "#4169E1",
-      icon: "biotech"
-    }
-  ];
+  // Calculate tab counts
+  const liveCount = classes.filter(c => c.active).length;
+  const scheduledCount = classes.filter(c => !c.active).length;
+  const totalCount = classes.length;
 
-  const pastClasses = [
-    {
-      id: 5,
-      subject: "English Literature",
-      teacher: "Ms. Rachel Green",
-      date: "Today",
-      time: "08:00 AM - 08:45 AM",
-      duration: "45 mins",
-      students: 35,
-      status: "completed",
-      recordingLink: "#",
-      color: "#FF69B4",
-      icon: "menu_book"
-    },
-    {
-      id: 6,
-      subject: "Computer Science",
-      teacher: "Mr. David Miller",
-      date: "Yesterday",
-      time: "03:30 PM - 04:15 PM",
-      duration: "45 mins",
-      students: 40,
-      status: "completed",
-      recordingLink: "#",
-      color: "#9370DB",
-      icon: "computer"
-    }
-  ];
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        setLoading(true);
+        const response = await classService.featchClasses(user);
+        setClasses(response);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const renderClassCard = (classItem) => (
-    <div key={classItem.id} className="class-card">
-      <div className="class-header" style={{ backgroundColor: classItem.color + '10' }}>
-        <div className="class-icon" style={{ backgroundColor: classItem.color }}>
-          <span className="material-icons" style={{ color: 'white' }}>{classItem.icon}</span>
-        </div>
-        <div className="class-status">
-          <span className={`status-badge ${classItem.status}`}>
-            {classItem.status.charAt(0).toUpperCase() + classItem.status.slice(1)}
-          </span>
-        </div>
-      </div>
-      <div className="class-content">
-        <h3 className="class-subject">{classItem.subject}</h3>
-        <p className="class-teacher">{classItem.teacher}</p>
-        <div className="class-info">
-          <div className="info-item">
-            <span className="material-icons">schedule</span>
-            <span>{classItem.time}</span>
+    if (user) {
+      fetchClasses();
+    }
+  }, [user]);
+
+  const handleCreateClass = async (courseId, newClassData) => {
+    try {
+      const response = await classService.createClass(courseId, newClassData);
+      console.log(response);
+      setClasses((prev) => [...prev, response]);
+    } catch (error) {
+      console.error("Error creating class:", error);
+    }
+  };
+
+  const handlePreviewClass = async (classId) => {
+    // TODO: Implement preview class logic
+  };
+
+  const handleStartStreaming = async (classId) => {
+    // TODO: Implement start streaming logic
+  };
+
+  const renderClassCard = (classItem) => {
+    const startDate = classItem.startingDate
+      ? new Date(classItem.startingDate).toLocaleDateString()
+      : "";
+    const endDate = classItem.endingDate
+      ? new Date(classItem.endingDate).toLocaleDateString()
+      : "";
+
+    return (
+      <div key={classItem.id} className="class-card">
+        <div className="class-header">
+          <div className="class-icon" style={{ backgroundColor: "#9370DB" }}>
+            <span className="material-icons" style={{ color: "white" }}>
+              {classItem.active ? "video_call" : "class"}
+            </span>
           </div>
-          {classItem.date && (
-            <div className="info-item">
-              <span className="material-icons">event</span>
-              <span>{classItem.date}</span>
-            </div>
-          )}
-          <div className="info-item">
-            <span className="material-icons">people</span>
-            <span>{classItem.students} students</span>
-          </div>
-        </div>
-        <div className="class-actions">
-          {classItem.status === "live" && (
-            <button
-              onClick={() => handleJoinClass(classItem.joinLink)}
-              className="join-btn"
+          <div className="class-status">
+            <span
+              className={`status-badge ${classItem.active ? "active" : "inactive"}`}
             >
-              Join Class
-              <span className="material-icons">video_call</span>
-            </button>
-          )}
-          {classItem.status === "completed" && (
-            <a href={classItem.recordingLink} className="view-btn">
-              View Recording
-              <span className="material-icons">play_circle</span>
-            </a>
-          )}
-          {classItem.status === "scheduled" && (
-            <button className="reminder-btn">
-              Set Reminder
-              <span className="material-icons">notifications</span>
-            </button>
-          )}
+              {classItem.active ? "Active" : "Inactive"}
+            </span>
+          </div>
+        </div>
+        <div className="class-content">
+          <h3 className="class-subject">{classItem.name}</h3>
+          <p className="class-teacher">{classItem.instructorName}</p>
+          <div className="class-info">
+            {classItem.description && (
+              <div className="info-item">
+                <span className="material-icons">description</span>
+                <span>{classItem.description}</span>
+              </div>
+            )}
+            {startDate && (
+              <div className="info-item">
+                <span className="material-icons">event</span>
+                <span>Starts: {startDate}</span>
+              </div>
+            )}
+            {endDate && (
+              <div className="info-item">
+                <span className="material-icons">event</span>
+                <span>Ends: {endDate}</span>
+              </div>
+            )}
+            <div className="info-item">
+              <span className="material-icons">people</span>
+              <span>{classItem.capacity} students</span>
+            </div>
+          </div>
+          <div className="class-actions">
+            {classItem.active && (
+              user.role === "TEACHER" ? (
+                <button
+                  onClick={() => handlePreviewClass(`/class/${classItem.id}`)}
+                  className="preview-btn bg-purple-500 text-white px-4 py-2 rounded-full hover:bg-purple-600 transition flex items-center gap-2 shadow-lg"
+                >
+                  <span className="material-icons">preview</span>
+                  Preview Class
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleJoinClass(`/class/${classItem.id}`)}
+                  className="join-btn"
+                >
+                  Join Class
+                  <span className="material-icons">video_call</span>
+                </button>
+              )
+            )}
+            {!classItem.active && (
+              user.role === "TEACHER" ? (
+                <button
+                  className="start-stream-btn bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition flex items-center gap-2 shadow-lg"
+                  onClick={() => handleStartStreaming(classItem.id)}
+                >
+                  <span className="material-icons">live_tv</span>
+                  Start Streaming
+                </button>
+              ) : (
+                <button className="reminder-btn">
+                  Set Reminder
+                  <span className="material-icons">notifications</span>
+                </button>
+              )
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="classes-container">
@@ -156,34 +159,46 @@ const Classes = () => {
         <h1>Classes</h1>
         <div className="tabs">
           <button
-            className={`tab-btn ${activeTab === 'live' ? 'active' : ''}`}
-            onClick={() => setActiveTab('live')}
+            className={`tab-btn ${activeTab === "live" ? "active" : ""}`}
+            onClick={() => setActiveTab("live")}
           >
             Live Classes
-            <span className="badge">{liveClasses.length}</span>
+            <span className="badge">{liveCount}</span>
           </button>
           <button
-            className={`tab-btn ${activeTab === 'scheduled' ? 'active' : ''}`}
-            onClick={() => setActiveTab('scheduled')}
+            className={`tab-btn ${activeTab === "scheduled" ? "active" : ""}`}
+            onClick={() => setActiveTab("scheduled")}
           >
             Scheduled
-            <span className="badge">{scheduledClasses.length}</span>
-          </button>
-          <button
-            className={`tab-btn ${activeTab === 'past' ? 'active' : ''}`}
-            onClick={() => setActiveTab('past')}
-          >
-            Past Classes
-            <span className="badge">{pastClasses.length}</span>
+            <span className="badge">{scheduledCount}</span>
           </button>
         </div>
       </div>
 
       <div className="classes-grid">
-        {activeTab === 'live' && liveClasses.map(renderClassCard)}
-        {activeTab === 'scheduled' && scheduledClasses.map(renderClassCard)}
-        {activeTab === 'past' && pastClasses.map(renderClassCard)}
+        {activeTab === "live" && classes.filter(c => c.active).map(renderClassCard)}
+        {activeTab === "scheduled" && classes.filter(c => !c.active).map(renderClassCard)}
       </div>
+
+      {showPopup && user.role == "TEACHER" && (
+        <CreateClassPopup
+          onClose={() => setShowPopup(false)}
+          onCreateClass={handleCreateClass}
+          user={user}
+        />
+      )}
+
+      {user.role == "TEACHER" && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <button
+            className="action-btn fixed-btn bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition flex items-center gap-2 shadow-lg"
+            onClick={() => setShowPopup(true)}
+          >
+            <span className="material-icons">add</span>
+            Create New Class
+          </button>
+        </div>
+      )}
     </div>
   );
 };

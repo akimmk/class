@@ -1,40 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateClassPopup from "../components/CreateClassPopup.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { classService } from "../utils/api";
+import { courseService } from "../utils/api";
 
 const TeacherClasses = () => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const { user } = useAuth();
 
-  // Sample data - In a real app, this would come from your backend
-  const [teacherClasses, setTeacherClasses] = useState([
-    {
-      id: 1,
-      name: "Physics 101",
-      students: 30,
-      schedule: "Mon, Wed 10:00 AM",
-      room: "Room 301",
-      nextSession: "2024-03-25",
-    },
-    {
-      id: 2,
-      name: "Chemistry 201",
-      students: 25,
-      schedule: "Tue, Thu 02:00 PM",
-      room: "Room 205",
-      nextSession: "2024-03-26",
-    },
-  ]);
+  const [teacherClasses, setTeacherClasses] = useState([]);
+
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        setLoading(true);
+        const response = await courseService.fetchCourses(user);
+        setTeacherClasses(response);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchClasses();
+    }
+  }, [user]);
 
   const handleCreateClass = async (courseId, newClassData) => {
     try {
       const response = await classService.createClass(courseId, newClassData);
       console.log(response);
-      setTeacherClasses([...teacherClasses, response]);
+      setTeacherClasses(prev => [...prev, response]);
     } catch (error) {
       console.error("Error creating class:", error);
       // You might want to show an error message to the user here
