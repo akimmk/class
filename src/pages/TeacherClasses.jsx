@@ -33,6 +33,7 @@ const TeacherClasses = () => {
   const handleCreateClass = async (courseId, newClassData) => {
     try {
       const response = await classService.createClass(courseId, newClassData);
+      console.log(response);
       setTeacherClasses([...teacherClasses, response]);
     } catch (error) {
       console.error("Error creating class:", error);

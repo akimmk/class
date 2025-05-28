@@ -43,8 +43,8 @@ const CreateClassPopup = ({ onClose, onCreateClass, user }) => {
     onCreateClass(selectedCourseId, {
       name: className,
       description,
-      instructionId: user.userId,
-      instructionName: user.username,
+      instructorId: user.userId,
+      instructorName: user.username,
       startingDate: new Date(startingDate),
       endingDate: new Date(endingDate),
     });

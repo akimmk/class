@@ -34,6 +34,7 @@ export const courseService = {
       if (user.role == "STUDENT") {
         response = await api.get(`/api/courses/user/${user.userId}/enrolled`);
       } else if (user.role == "TEACHER") {
+        console.log("Teachers information:", user);
         response = await api.get(`/api/courses/user/${user.userId}/assigned`);
       }
       console.log(response);
@@ -74,15 +75,13 @@ export const classService = {
       });
   },
   createClass: async (courseId, classData) => {
-    api
-      .post(`/api/courses/create/${courseId}/class`, classData)
-      .then((response) => {
-        console.log(response);
-        return response.data;
-      })
-      .catch((error) => {
-        console.error("Error creating class:", error);
-      });
+    try {
+      const response = await api.post(`/api/courses/create/${courseId}/class`, classData);
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      console.log(error)
+    }
   },
 };
 
