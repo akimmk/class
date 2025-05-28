@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import ClassListWindow from "../components/ClassListWindow.jsx";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const CourseCard = ({ course }) => {
-  const [showClassList, setShowClassList] = useState(false);
+  const navigate = useNavigate();
 
   const handleContinueLearning = () => {
-    setShowClassList(true);
+    navigate(`/student/courses/${course.courseId}`);
   };
 
   return (
@@ -40,13 +40,6 @@ const CourseCard = ({ course }) => {
           </div>
         </div>
       </div>
-
-      {showClassList && (
-        <ClassListWindow
-          course={course}
-          onClose={() => setShowClassList(false)}
-        />
-      )}
     </>
   );
 };

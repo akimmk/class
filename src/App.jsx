@@ -1,5 +1,11 @@
 import React, { useMemo } from "react";
-import { HashRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  HashRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import Layout from "./components/Layout.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Course from "./pages/Course.jsx";
@@ -8,6 +14,8 @@ import Streaming from "./pages/Streaming.jsx";
 import Consumer from "./pages/Consumer.jsx";
 import Login from "./pages/Login.jsx";
 import TeacherDashboard from "./pages/TeacherDashboard.jsx";
+import TeacherClasses from "./pages/TeacherClasses.jsx";
+import CourseDetail from "./components/CourseDetail.jsx";
 import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import "./index.css";
 
@@ -49,7 +57,7 @@ const App = () => {
         <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
-          
+
           {/* Redirect root to login if not authenticated */}
           <Route path="/" element={<Navigate to="/login" replace />} />
 
@@ -63,6 +71,7 @@ const App = () => {
             }
           >
             <Route index element={<TeacherDashboard />} />
+            <Route path="classes" element={<TeacherClasses />} />
             <Route path="streaming" element={<Streaming />} />
           </Route>
 
@@ -77,6 +86,7 @@ const App = () => {
           >
             <Route index element={<Dashboard />} />
             <Route path="courses" element={<Course />} />
+            <Route path="courses/:courseId" element={<CourseDetail />} />
             <Route path="classes" element={<Classes />} />
             <Route path="consumer" element={<Consumer />} />
           </Route>

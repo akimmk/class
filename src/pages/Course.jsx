@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import CourseCard from "../components/CourseCard.jsx";
 import { courseService } from "../utils/api";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const Course = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [courses, setCourses] = useState([]); // Ensure initial state is an array
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const data = await courseService.fetchCourses();
+        const data = await courseService.fetchCourses(user);
         setCourses(data); // `data` is already the `content` array
       } catch (err) {
         setError(err.message || "Failed to fetch courses");

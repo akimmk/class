@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -14,18 +15,16 @@ const Login = () => {
   const decodeJWT = (token) => {
     try {
       // JWT tokens are in format: header.payload.signature
-      const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split("")
-          .map(function (c) {
-            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-          })
-          .join(""),
-      );
+      const decoded = jwtDecode(token);
+      const userId = decoded.sub;
+      const username = decoded.username;
+      const role = decoded.role;
 
-      return JSON.parse(jsonPayload);
+      return {
+        userId,
+        username,
+        role,
+      };
     } catch (error) {
       console.error("Error decoding JWT:", error);
       return null;
@@ -36,8 +35,21 @@ const Login = () => {
     e.preventDefault();
     setError("");
     setLoading(true);
+    // switch (username) {
+    //   case "teacher":
+    //     login(username, "TEACHER");
+    //     navigate("/teacher");
+    //     break;
+    //   case "student":
+    //     login(username, "STUDENT");
+    //     navigate("/student");
+    //     break;
+    //   default:
+    //     break;
+    // }
+    // return;
     try {
-      const response = await fetch("http://10.139.27.89:8080/api/auth/login", {
+      const response = await fetch("http://localhost:8080/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,15 +69,17 @@ const Login = () => {
         const decodedToken = decodeJWT(data.accessToken);
         console.log("Decoded token:", decodedToken);
 
-        if (decodedToken && decodedToken.sub) {
-          // The sub claim contains "username,ROLE"
-          const [, role] = decodedToken.sub.split(",");
+        if (
+          decodedToken &&
+          decodedToken.userId &&
+          decodedToken.username &&
+          decodedToken.role
+        ) {
+          const { userId, username, role } = decodedToken;
           console.log("Extracted role:", role);
 
-          // Login with username and role
-          login(username, role);
+          login(userId, username, role);
 
-          // Redirect based on role
           switch (role) {
             case "TEACHER":
               navigate("/teacher");
