@@ -56,7 +56,7 @@ const CourseCard = ({ course, user }) => {
           </div>
           <div className="course-actions">
             <button className="continue-btn" onClick={handleContinueLearning}>
-              View Classes
+              View Detail
               <span className="material-icons">arrow_forward</span>
             </button>
           </div>

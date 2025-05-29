@@ -31,15 +31,32 @@ const CourseDetail = () => {
 
   return (
     <div className="course-detail-container">
-      <div className="course-header">
-        <div className="course-icon" style={{ backgroundColor: course.color }}>
-          <span className="material-icons" style={{ color: "white" }}>
-            {course.icon}
+      <div className="course-header bg-white rounded-lg shadow-md p-6 flex items-center gap-6 mb-8">
+        <div
+          className="course-icon flex items-center justify-center w-20 h-20 rounded-xl"
+          style={{ backgroundColor: course.color || "#6366F1" }}
+        >
+          <span className="material-icons text-4xl text-white">
+            {course.icon || "school"}
           </span>
         </div>
-        <h2>{course.courseName}</h2>
-        <p>Instructor: {course.instructors}</p>
-        <p>Credit Hours: {course.credits}</p>
+        <div className="flex flex-col gap-2">
+          <h2 className="text-3xl font-bold text-gray-900 mb-1">
+            {course.courseName}
+          </h2>
+          <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full text-blue-700 font-medium">
+              <span className="material-icons text-base">person</span>
+              Instructor:{" "}
+              <span className="font-semibold">{course.instructors}</span>
+            </div>
+            <div className="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full text-green-700 font-medium">
+              <span className="material-icons text-base">schedule</span>
+              Credit Hours:{" "}
+              <span className="font-semibold">{course.credits}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="course-classes">

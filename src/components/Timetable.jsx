@@ -13,6 +13,7 @@ const Timetable = () => {
       if (!user) return;
       try {
         const response = await classService.featchClasses(user);
+        console.log("Fetched Classes:", response);
         setClasses(response);
       } catch (error) {
         setClasses([]);
@@ -23,6 +24,7 @@ const Timetable = () => {
 
   // Group classes by day (using startingDate)
   const timeSlotsByDay = classes.reduce((acc, classItem) => {
+    console.log("Class Item:", classItem);
     if (!classItem.startingDate) return acc;
     const date = new Date(classItem.startingDate);
     const day = ("0" + date.getDate()).slice(-2); // e.g., "01", "02"
