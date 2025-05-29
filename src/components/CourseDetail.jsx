@@ -1,7 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { courseService } from "../utils/api";
+import { courseService, classService } from "../utils/api";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const CourseDetail = () => {
   const { courseId } = useParams();
@@ -9,6 +10,7 @@ const CourseDetail = () => {
   const [course, setCourse] = useState(null);
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -25,6 +27,25 @@ const CourseDetail = () => {
 
     fetchCourseDetails();
   }, [courseId]);
+
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const classesData = await classService.fetchClassesCourseId(
+          user, // Assuming you have the instructorId in course
+          courseId
+        );
+        console.log(classesData);
+        setClasses(classesData);
+      } catch (error) {
+        console.error("Error fetching classes:", error);
+      }
+      setLoading(false);
+    };
+    if (courseId) {
+      fetchClasses();
+    }
+  }, [courseId, course?.instructorId]);
 
   if (loading) return <div>Loading...</div>;
   if (!course) return <div>Course not found</div>;

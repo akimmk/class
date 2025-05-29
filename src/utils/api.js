@@ -64,15 +64,18 @@ export const courseService = {
 
 export const classService = {
   fetchClassesCourseId: async (user, courseId) => {
-    api
-      .get(`/api/courses/${courseId}`)
-      .then((response) => {
-        console.log("Fetch Classes Response:", response);
-        return response.data;
-      })
-      .catch((error) => {
-        console.error("Error fetching classes:", error);
-      });
+    try{
+      const response = await api.get(`/api/courses/user/${user.userId}/course/${courseId}/classrooms`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw (
+        error.response?.data || {
+          message: "An error occurred while fetching classes for course",
+        }
+      );
+      
+    }
   },
   featchClasses: async (user) => {
     try {
