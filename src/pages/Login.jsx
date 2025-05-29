@@ -117,9 +117,8 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-blue-500 to-blue-800">
       <div className="w-full max-w-md p-8 mx-4 bg-white rounded-2xl shadow-xl">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Hello,</h1>
           <h2 className="text-3xl font-bold text-gray-900 mb-3">
-            Welcome Back
+            Sign in to ClassPilot
           </h2>
           <p className="text-gray-600 text-sm">
             Hey, welcome back to your special place

@@ -1,8 +1,23 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+// Color mapping for course names
+const courseColorMap = {
+  Database: "#4F46E5", // Indigo
+  Programming: "#10B981", // Emerald
+  Mathematics: "#F59E42", // Orange
+  Physics: "#F43F5E", // Rose
+  Chemistry: "#6366F1", // Blue
+  // Add more as needed
+};
+const defaultColor = "#64748B"; // Slate
+
 const CourseCard = ({ course, user }) => {
   const navigate = useNavigate();
+
+  // Use color from course, or assign based on course name, or fallback to default
+  const color =
+    course.color || courseColorMap[course.courseName] || defaultColor;
 
   const handleContinueLearning = () => {
     navigate(`/${user.role.toLowerCase()}/courses/${course.courseId}`);
@@ -13,11 +28,11 @@ const CourseCard = ({ course, user }) => {
       <div className="course-card shadow-md round">
         <div
           className="course-header"
-          style={{ backgroundColor: course.color + "10" }}
+          style={{ backgroundColor: color + "10" }}
         >
           <div
             className="course-icon"
-            style={{ backgroundColor: course.color }}
+            style={{ backgroundColor: color }}
           >
             <span className="material-icons" style={{ color: "white" }}>
               {course.icon}
@@ -41,7 +56,7 @@ const CourseCard = ({ course, user }) => {
           </div>
           <div className="course-actions">
             <button className="continue-btn" onClick={handleContinueLearning}>
-              Continue Learning
+              View Classes
               <span className="material-icons">arrow_forward</span>
             </button>
           </div>
