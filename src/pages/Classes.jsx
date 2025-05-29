@@ -13,15 +13,11 @@ const Classes = () => {
 
   const { user } = useAuth();
 
-  const handleJoinClass = (joinLink) => {
-    navigate(joinLink);
-  };
-
   const [classes, setClasses] = useState([]);
 
   // Calculate tab counts
-  const liveCount = classes.filter(c => c.active).length;
-  const scheduledCount = classes.filter(c => !c.active).length;
+  const liveCount = classes.filter((c) => c.active).length;
+  const scheduledCount = classes.filter((c) => !c.active).length;
   const totalCount = classes.length;
 
   useEffect(() => {
@@ -52,12 +48,12 @@ const Classes = () => {
     }
   };
 
-  const handlePreviewClass = async (classId) => {
-    // TODO: Implement preview class logic
+  const handleClassBtn = async (classId) => {
+    navigate(`/teacher/streaming/${classId}`);
   };
 
-  const handleStartStreaming = async (classId) => {
-    // TODO: Implement start streaming logic
+  const handleJoinClass = async (classId) => {
+    navigate(`/student/consumer/${classId}`);
   };
 
   const renderClassCard = (classItem) => {
@@ -112,10 +108,10 @@ const Classes = () => {
             </div>
           </div>
           <div className="class-actions">
-            {classItem.active && (
-              user.role === "TEACHER" ? (
+            {classItem.active &&
+              (user.role === "TEACHER" ? (
                 <button
-                  onClick={() => handlePreviewClass(`/class/${classItem.id}`)}
+                  onClick={() => handleClassBtn(classItem.id)}
                   className="preview-btn bg-purple-500 text-white px-4 py-2 rounded-full hover:bg-purple-600 transition flex items-center gap-2 shadow-lg"
                 >
                   <span className="material-icons">preview</span>
@@ -123,19 +119,18 @@ const Classes = () => {
                 </button>
               ) : (
                 <button
-                  onClick={() => handleJoinClass(`/class/${classItem.id}`)}
+                  onClick={() => handleJoinClass(classItem.id)}
                   className="join-btn"
                 >
                   Join Class
                   <span className="material-icons">video_call</span>
                 </button>
-              )
-            )}
-            {!classItem.active && (
-              user.role === "TEACHER" ? (
+              ))}
+            {!classItem.active &&
+              (user.role === "TEACHER" ? (
                 <button
                   className="start-stream-btn bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition flex items-center gap-2 shadow-lg"
-                  onClick={() => handleStartStreaming(classItem.id)}
+                  onClick={() => handleClassBtn(classItem.id)}
                 >
                   <span className="material-icons">live_tv</span>
                   Start Streaming
@@ -145,8 +140,7 @@ const Classes = () => {
                   Set Reminder
                   <span className="material-icons">notifications</span>
                 </button>
-              )
-            )}
+              ))}
           </div>
         </div>
       </div>
@@ -176,8 +170,10 @@ const Classes = () => {
       </div>
 
       <div className="classes-grid">
-        {activeTab === "live" && classes.filter(c => c.active).map(renderClassCard)}
-        {activeTab === "scheduled" && classes.filter(c => !c.active).map(renderClassCard)}
+        {activeTab === "live" &&
+          classes.filter((c) => c.active).map(renderClassCard)}
+        {activeTab === "scheduled" &&
+          classes.filter((c) => !c.active).map(renderClassCard)}
       </div>
 
       {showPopup && user.role == "TEACHER" && (

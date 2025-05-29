@@ -1,12 +1,14 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   getLocalStream,
   selectSource,
   replaceProducerTrack,
 } from "../utils/mediasoup";
 import { useAuth } from "../context/AuthContext.jsx";
+import { useParams } from "react-router-dom";
 
 const Streaming = () => {
+  const { classId } = useParams();
   const { user } = useAuth();
   const [isPreviewActive, setIsPreviewActive] = useState(false);
   const [selectedSource, setSelectedSource] = useState(null);
@@ -19,6 +21,12 @@ const Streaming = () => {
   });
   const previewVideoRef = useRef(null);
   const currentStreamRef = useRef(null);
+
+  useEffect(() => {
+    if (classId) {
+      setRoomName(classId);
+    }
+  }, [classId]);
 
   const handleStartPreview = async () => {
     try {
@@ -238,11 +246,10 @@ const Streaming = () => {
             <button
               onClick={isStreaming ? handleStopStreaming : handleStartStreaming}
               disabled={!selectedSource || !roomName}
-              className={`w-full py-2 px-4 rounded-lg transition-colors ${
-                isStreaming
-                  ? "bg-red-500 hover:bg-red-600 text-white"
-                  : "bg-green-500 hover:bg-green-600 text-white disabled:bg-gray-400 disabled:cursor-not-allowed"
-              }`}
+              className={`w-full py-2 px-4 rounded-lg transition-colors ${isStreaming
+                ? "bg-red-500 hover:bg-red-600 text-white"
+                : "bg-green-500 hover:bg-green-600 text-white disabled:bg-gray-400 disabled:cursor-not-allowed"
+                }`}
             >
               {isStreaming ? "Stop Streaming" : "Start Streaming"}
             </button>

@@ -14,7 +14,6 @@ import Streaming from "./pages/Streaming.jsx";
 import Consumer from "./pages/Consumer.jsx";
 import Login from "./pages/Login.jsx";
 import TeacherDashboard from "./pages/TeacherDashboard.jsx";
-import TeacherClasses from "./pages/TeacherClasses.jsx";
 import CourseDetail from "./components/CourseDetail.jsx";
 import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import "./index.css";
@@ -74,7 +73,7 @@ const App = () => {
             <Route path="classes" element={<Classes />} />
             <Route path="courses" element={<Course />} />
             <Route path="courses/:courseId" element={<CourseDetail />} />
-            <Route path="streaming" element={<Streaming />} />
+            <Route path="streaming/:classId" element={<Streaming />} />
           </Route>
 
           {/* Student Routes */}
@@ -90,7 +89,7 @@ const App = () => {
             <Route path="courses" element={<Course />} />
             <Route path="courses/:courseId" element={<CourseDetail />} />
             <Route path="classes" element={<Classes />} />
-            <Route path="consumer" element={<Consumer />} />
+            <Route path="consumer/:classId" element={<Consumer />} />
           </Route>
 
           {/* Admin Routes */}

@@ -10,14 +10,12 @@ const Sidebar = () => {
     { icon: "dashboard", label: "Teacher Dashboard", path: "/teacher" },
     { icon: "book", label: "Courses", path: "/teacher/courses" },
     { icon: "schedule", label: "Classes", path: "/teacher/classes" },
-    { icon: "videocam", label: "Streaming", path: "/teacher/streaming" },
   ];
 
   const studentNavItems = [
     { icon: "dashboard", label: "Dashboard", path: "/student" },
     { icon: "book", label: "Courses", path: "/student/courses" },
     { icon: "schedule", label: "Classes", path: "/student/classes" },
-    { icon: "play_circle", label: "View Stream", path: "/student/consumer" },
   ];
 
   const adminNavItems = [
@@ -27,10 +25,10 @@ const Sidebar = () => {
     { icon: "people", label: "Users", path: "/admin/users" },
   ];
 
-  const navItems = isAdmin() 
-    ? adminNavItems 
-    : isTeacher() 
-      ? teacherNavItems 
+  const navItems = isAdmin()
+    ? adminNavItems
+    : isTeacher()
+      ? teacherNavItems
       : studentNavItems;
 
   const handleLogout = () => {

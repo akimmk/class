@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { goConsume } from "../utils/mediasoup";
 import { useAuth } from "../context/AuthContext.jsx";
+import { useParams } from "react-router-dom";
 
 const Consumer = () => {
+  const { classId } = useParams();
   const { user } = useAuth();
   const [roomName, setRoomName] = useState("");
   const [isStreamActive, setIsStreamActive] = useState(false);
@@ -12,6 +14,12 @@ const Consumer = () => {
     bitrate: "0 kbps",
   });
   const videoRef = useRef(null);
+
+  useEffect(() => {
+    if (classId) {
+      setRoomName(classId);
+    }
+  }, [classId]);
 
   useEffect(() => {
     // Set up stats monitoring
@@ -155,4 +163,3 @@ const Consumer = () => {
 };
 
 export default Consumer;
-
