@@ -11,9 +11,12 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Course from "./pages/Course.jsx";
 import Classes from "./pages/Classes.jsx";
 import Streaming from "./pages/Streaming.jsx";
+import EnhancedStreaming from "./pages/EnhancedStreaming.jsx";
 import Consumer from "./pages/Consumer.jsx";
+import EnhancedConsumer from "./pages/EnhancedConsumer.jsx";
 import Login from "./pages/Login.jsx";
 import TeacherDashboard from "./pages/TeacherDashboard.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 import CourseDetail from "./components/CourseDetail.jsx";
 import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import "./index.css";
@@ -73,7 +76,7 @@ const App = () => {
             <Route path="classes" element={<Classes />} />
             <Route path="courses" element={<Course />} />
             <Route path="courses/:courseId" element={<CourseDetail />} />
-            <Route path="streaming/:classId" element={<Streaming />} />
+            <Route path="streaming/:classId" element={<EnhancedStreaming />} />
           </Route>
 
           {/* Student Routes */}
@@ -89,7 +92,7 @@ const App = () => {
             <Route path="courses" element={<Course />} />
             <Route path="courses/:courseId" element={<CourseDetail />} />
             <Route path="classes" element={<Classes />} />
-            <Route path="consumer/:classId" element={<Consumer />} />
+            <Route path="consumer/:classId" element={<EnhancedConsumer />} />
           </Route>
 
           {/* Admin Routes */}
@@ -101,7 +104,7 @@ const App = () => {
               </ProtectedRoute>
             }
           >
-            <Route index element={<Dashboard />} />
+            <Route index element={<AdminDashboard />} />
             <Route path="courses" element={<Course />} />
             <Route path="classes" element={<Classes />} />
           </Route>
