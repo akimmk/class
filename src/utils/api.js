@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://10.139.27.98:8080"; // API Gateway URL
+const API_BASE_URL = "http://192.168.1.2:8080"; // API Gateway URL
 // const API_BASE_URL = "http://localhost:8080"; // API Gateway URL
 const api = axios.create({
   baseURL: API_BASE_URL,

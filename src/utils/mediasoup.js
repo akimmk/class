@@ -9,7 +9,7 @@ let producer;
 let consumer;
 let isProducer = false;
 let username;
-const baseUrl = "http://10.139.27.117:3000";
+const baseUrl = "http://192.168.1.2:3000";
 
 let audioProducer;
 let videoProducer;
